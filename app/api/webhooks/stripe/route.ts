@@ -3,14 +3,6 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
-
-// Create a Supabase client with service role for webhook handling
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export async function POST(request: Request) {
   const body = await request.text()
   const headersList = await headers()
@@ -19,6 +11,15 @@ export async function POST(request: Request) {
   if (!signature) {
     return NextResponse.json({ error: "No signature" }, { status: 400 })
   }
+
+  // Initialize Stripe and Supabase INSIDE the handler to avoid build-time errors
+  // when environment variables might be missing.
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
+
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
 
   let event: Stripe.Event
 
