@@ -14,7 +14,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
   const params = await searchParams
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     redirect("/auth/login")
   }
@@ -49,8 +49,8 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         stripe_subscription_id: subscription.id,
         status: subscription.status,
         plan_id: session.metadata?.product_id || 'monthly-membership',
-        current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-        current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+        current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
+        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
         cancel_at_period_end: subscription.cancel_at_period_end,
       })
     }
@@ -68,7 +68,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         <Sparkles className="h-8 w-8 text-primary" />
         <span className="font-serif text-2xl font-semibold text-foreground">Kundalini Awakening</span>
       </Link>
-      
+
       <Card className="w-full max-w-md border-border/50 text-center">
         <CardHeader>
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
