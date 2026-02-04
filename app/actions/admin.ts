@@ -5,17 +5,17 @@ import { revalidatePath } from "next/cache";
 
 export async function createResource(formData: FormData) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
-  
+
   // Check if admin
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
-    
+
   if (!profile?.is_admin) throw new Error("Unauthorized");
 
   const title = formData.get("title") as string;
@@ -42,24 +42,24 @@ export async function createResource(formData: FormData) {
   });
 
   if (error) throw new Error(error.message);
-  
-  revalidatePath("/admin/resources", "max");
-  revalidatePath("/dashboard/resources", "max");
+
+  revalidatePath("/admin/resources", "layout");
+  revalidatePath("/dashboard/resources", "layout");
   return { success: true };
 }
 
 export async function updateResource(id: string, formData: FormData) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
-  
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
-    
+
   if (!profile?.is_admin) throw new Error("Unauthorized");
 
   const title = formData.get("title") as string;
@@ -89,46 +89,46 @@ export async function updateResource(id: string, formData: FormData) {
     .eq("id", id);
 
   if (error) throw new Error(error.message);
-  
-  revalidatePath("/admin/resources", "max");
-  revalidatePath("/dashboard/resources", "max");
+
+  revalidatePath("/admin/resources", "layout");
+  revalidatePath("/dashboard/resources", "layout");
   return { success: true };
 }
 
 export async function deleteResource(id: string) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
-  
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
-    
+
   if (!profile?.is_admin) throw new Error("Unauthorized");
 
   const { error } = await supabase.from("resources").delete().eq("id", id);
   if (error) throw new Error(error.message);
-  
-  revalidatePath("/admin/resources", "max");
-  revalidatePath("/dashboard/resources", "max");
+
+  revalidatePath("/admin/resources", "layout");
+  revalidatePath("/dashboard/resources", "layout");
   return { success: true };
 }
 
 export async function createCategory(formData: FormData) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
-  
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
-    
+
   if (!profile?.is_admin) throw new Error("Unauthorized");
 
   const name = formData.get("name") as string;
@@ -142,35 +142,35 @@ export async function createCategory(formData: FormData) {
   });
 
   if (error) throw new Error(error.message);
-  
-  revalidatePath("/admin/categories", "max");
+
+  revalidatePath("/admin/categories", "layout");
   return { success: true };
 }
 
 export async function deleteCategory(id: string) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
-  
+
   const { data: profile } = await supabase
     .from("profiles")
     .select("is_admin")
     .eq("id", user.id)
     .single();
-    
+
   if (!profile?.is_admin) throw new Error("Unauthorized");
 
   const { error } = await supabase.from("categories").delete().eq("id", id);
   if (error) throw new Error(error.message);
-  
-  revalidatePath("/admin/categories", "max");
+
+  revalidatePath("/admin/categories", "layout");
   return { success: true };
 }
 
 export async function recordDownload(resourceId: string) {
   const supabase = await createClient();
-  
+
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
 
