@@ -1,7 +1,6 @@
 "use client"
 
-import React from "react"
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -10,7 +9,6 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { AlertCircle, Loader2 } from "lucide-react"
 import { createClient } from "@/lib/client"
-
 import { AuthSplitLayout } from "@/components/auth-split-layout"
 
 export default function LoginPage() {
@@ -38,7 +36,6 @@ export default function LoginPage() {
     }
 
     router.push("/dashboard")
-    router.refresh()
   }
 
   async function handleGoogleLogin() {
@@ -61,7 +58,7 @@ export default function LoginPage() {
     <AuthSplitLayout>
       <div className="mb-8 space-y-2 text-center lg:text-left">
         <h1 className="font-serif text-3xl font-bold tracking-wide text-foreground">Welcome Back</h1>
-        <p className="text-muted-foreground">Sign in to access your member dashboard</p>
+        <p className="text-muted-foreground">Sign in to your Soulhome account</p>
       </div>
 
       <div className="space-y-4">
@@ -141,7 +138,7 @@ export default function LoginPage() {
             <Input
               id="password"
               type="password"
-              placeholder="Enter your password"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -163,9 +160,9 @@ export default function LoginPage() {
 
         <div className="mt-6 text-center text-sm">
           <p className="text-muted-foreground">
-            Don{"'"}t have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link href="/auth/sign-up" className="font-medium text-primary hover:underline">
-              Sign up for free
+              Sign up
             </Link>
           </p>
         </div>
