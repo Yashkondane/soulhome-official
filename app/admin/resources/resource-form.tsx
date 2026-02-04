@@ -227,7 +227,7 @@ export function ResourceForm({ categories, resource }: ResourceFormProps) {
                 <Label htmlFor="type">Type</Label>
                 <Select
                   value={formData.type}
-                  onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                  onValueChange={(value) => setFormData(prev => ({ ...prev, type: value as "pdf" | "audio" | "video" }))}
                 >
                   <SelectTrigger>
                     <SelectValue />
