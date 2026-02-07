@@ -34,6 +34,11 @@ begin
     alter table public.resources add column type text check (type in ('pdf', 'audio', 'video')) default 'pdf';
   end if;
 
+  -- FIX LEGACY COLUMN: file_type (remove not-null constraint if it exists)
+  if exists (select 1 from information_schema.columns where table_name = 'resources' and column_name = 'file_type') then
+    alter table public.resources alter column file_type drop not null;
+  end if;
+
   -- Add is_published
   if not exists (select 1 from information_schema.columns where table_name = 'resources' and column_name = 'is_published') then
     alter table public.resources add column is_published boolean default false;

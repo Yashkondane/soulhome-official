@@ -49,8 +49,8 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         stripe_subscription_id: subscription.id,
         status: subscription.status,
         plan_id: session.metadata?.product_id || 'monthly-membership',
-        current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
-        current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
+        current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
+        current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
         cancel_at_period_end: subscription.cancel_at_period_end,
       })
     }
