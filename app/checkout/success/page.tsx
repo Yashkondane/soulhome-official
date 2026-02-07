@@ -36,31 +36,53 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
   if (session.subscription && typeof session.subscription !== 'string') {
     const subscription = session.subscription
 
-    // Create a Service Role client to bypass RLS for subscription insertion
-    const supabaseAdmin = createSupabaseClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    )
+    try {
+      // Create a Service Role client to bypass RLS for subscription insertion
+      const supabaseAdmin = createSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.SUPABASE_SERVICE_ROLE_KEY!
+      )
 
-    // Check if subscription already exists
-    const { data: existingSub } = await supabaseAdmin
-      .from('subscriptions')
-      .select('*')
-      .eq('stripe_subscription_id', subscription.id)
-      .single()
+      // Check if subscription already exists
+      const { data: existingSub, error: fetchError } = await supabaseAdmin
+        .from('subscriptions')
+        .select('*')
+        .eq('stripe_subscription_id', subscription.id)
+        .single()
 
-    if (!existingSub) {
-      await supabaseAdmin.from('subscriptions').insert({
-        user_id: user.id,
-        stripe_customer_id: typeof session.customer === 'string' ? session.customer : session.customer?.id,
-        stripe_subscription_id: subscription.id,
-        status: subscription.status,
-        plan_id: session.metadata?.product_id || 'monthly-membership',
-        used_downloads: 0,
-        current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
-        current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
-        cancel_at_period_end: subscription.cancel_at_period_end,
-      })
+      if (fetchError && fetchError.code !== 'PGRST116') {
+        console.error("Error fetching subscription:", fetchError)
+      }
+
+      if (existingSub) {
+        // Update existing subscription
+        const { error: updateError } = await supabaseAdmin.from('subscriptions').update({
+          status: 'active', // Force active since we are in success page
+          current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
+          current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
+          cancel_at_period_end: subscription.cancel_at_period_end,
+        }).eq('id', existingSub.id)
+
+        if (updateError) console.error("Error updating subscription:", updateError)
+
+      } else {
+        // Insert new subscription
+        const { error: insertError } = await supabaseAdmin.from('subscriptions').insert({
+          user_id: user.id,
+          stripe_customer_id: typeof session.customer === 'string' ? session.customer : session.customer?.id,
+          stripe_subscription_id: subscription.id,
+          status: 'active', // Force active
+          plan_id: session.metadata?.product_id || 'monthly-membership',
+          used_downloads: 0,
+          current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
+          current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
+          cancel_at_period_end: subscription.cancel_at_period_end,
+        })
+
+        if (insertError) console.error("Error inserting subscription:", insertError)
+      }
+    } catch (err) {
+      console.error("CRITICAL: Failed to process subscription in success page:", err)
     }
   }
 

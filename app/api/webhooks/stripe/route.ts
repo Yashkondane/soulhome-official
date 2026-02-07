@@ -61,6 +61,28 @@ export async function POST(request: Request) {
             .from('subscriptions')
             .update(subscriptionData)
             .eq('stripe_subscription_id', subscription.id)
+        } else {
+          // If subscription doesn't exist, we need to create it.
+          // First, fetch the customer to get the metadata with supabase_user_id
+          const customer = await stripe.customers.retrieve(subscription.customer as string)
+
+          if ((customer as any).deleted) {
+            console.error("Customer deleted, cannot create subscription")
+            break
+          }
+
+          const supabaseUserId = (customer as Stripe.Customer).metadata.supabase_user_id
+
+          if (supabaseUserId) {
+            await supabase.from('subscriptions').insert({
+              user_id: supabaseUserId,
+              ...subscriptionData,
+              status: 'active', // Ensure we store it as active initially if valid
+              plan_id: subscription.metadata?.product_id || 'monthly-membership',
+            })
+          } else {
+            console.error("No supabase_user_id found in customer metadata for subscription:", subscription.id)
+          }
         }
         break
       }
