@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/server"
+import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Sparkles, CheckCircle2, ArrowRight, Library, Download, Heart } from "lucide-react"
@@ -35,20 +36,27 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
   if (session.subscription && typeof session.subscription !== 'string') {
     const subscription = session.subscription
 
+    // Create a Service Role client to bypass RLS for subscription insertion
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
+
     // Check if subscription already exists
-    const { data: existingSub } = await supabase
+    const { data: existingSub } = await supabaseAdmin
       .from('subscriptions')
       .select('*')
       .eq('stripe_subscription_id', subscription.id)
       .single()
 
     if (!existingSub) {
-      await supabase.from('subscriptions').insert({
+      await supabaseAdmin.from('subscriptions').insert({
         user_id: user.id,
         stripe_customer_id: typeof session.customer === 'string' ? session.customer : session.customer?.id,
         stripe_subscription_id: subscription.id,
         status: subscription.status,
         plan_id: session.metadata?.product_id || 'monthly-membership',
+        used_downloads: 0,
         current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
         current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
         cancel_at_period_end: subscription.cancel_at_period_end,
