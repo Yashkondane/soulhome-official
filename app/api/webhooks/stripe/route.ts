@@ -47,12 +47,18 @@ export async function POST(request: Request) {
           .eq('stripe_subscription_id', subscription.id)
           .single()
 
+
+        const toISO = (timestamp: number | null | undefined) => {
+          if (!timestamp) return new Date().toISOString()
+          return new Date(timestamp * 1000).toISOString()
+        }
+
         const subscriptionData = {
           stripe_customer_id: subscription.customer as string,
           stripe_subscription_id: subscription.id,
           status: subscription.status,
-          current_period_start: new Date((subscription as unknown as { current_period_start: number }).current_period_start * 1000).toISOString(),
-          current_period_end: new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000).toISOString(),
+          current_period_start: toISO(subscription.current_period_start),
+          current_period_end: toISO(subscription.current_period_end),
           cancel_at_period_end: subscription.cancel_at_period_end,
         }
 
@@ -172,7 +178,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error("Webhook handler error:", error)
     return NextResponse.json(
-      { error: "Webhook handler failed" },
+      { error: `Webhook handler failed: ${error instanceof Error ? error.message : String(error)}` },
       { status: 500 }
     )
   }
