@@ -71,17 +71,33 @@ export async function POST(request: Request) {
             break
           }
 
-          const supabaseUserId = (customer as Stripe.Customer).metadata.supabase_user_id
+          // Safe access to metadata
+          const customerData = customer as Stripe.Customer
+          const supabaseUserId = customerData.metadata?.supabase_user_id
 
           if (supabaseUserId) {
-            await supabase.from('subscriptions').insert({
+            console.log(`Creating subscription for user ${supabaseUserId}`)
+
+            const insertData = {
               user_id: supabaseUserId,
               ...subscriptionData,
-              status: 'active', // Ensure we store it as active initially if valid
+              status: 'active',
               plan_id: subscription.metadata?.product_id || 'monthly-membership',
-            })
+            }
+
+            const { error: insertError } = await supabase.from('subscriptions').insert(insertData)
+
+            if (insertError) {
+              console.error("Error inserting subscription to Supabase:", insertError)
+              // We do NOT throw here, so Stripe gets a 200 OK and doesn't retry endlessly if it's a data issue
+            } else {
+              console.log("Subscription created successfully")
+            }
+
           } else {
             console.error("No supabase_user_id found in customer metadata for subscription:", subscription.id)
+            // Log the customer object for debugging
+            console.log("Customer metadata:", customerData.metadata)
           }
         }
         break
@@ -125,6 +141,28 @@ export async function POST(request: Request) {
             .from('subscriptions')
             .update({ status: 'past_due' })
             .eq('stripe_subscription_id', (invoice as any).subscription as string)
+        }
+        break
+      }
+      case "checkout.session.completed": {
+        const session = event.data.object as Stripe.Checkout.Session
+
+        // Check if this is a one-time payment for an event
+        if (session.mode === 'payment' && session.metadata?.type === 'one_time') {
+          const userId = session.metadata.user_id
+          const productId = session.metadata.product_id
+
+          // Record the booking
+          await supabase.from('bookings').insert({
+            user_id: userId,
+            stripe_session_id: session.id,
+            payment_intent_id: session.payment_intent as string,
+            amount_paid: session.amount_total,
+            currency: session.currency,
+            status: 'paid',
+            // We could link to an event_id here if we map productId -> event_id
+            // for now we'll store the stripe_session_id which serves as proof
+          })
         }
         break
       }

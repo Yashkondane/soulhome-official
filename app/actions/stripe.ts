@@ -9,7 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 export async function createCheckoutSession(productId: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     throw new Error("Not authenticated")
   }
@@ -19,16 +19,18 @@ export async function createCheckoutSession(productId: string) {
     throw new Error("Product not found")
   }
 
-  // Check if user already has an active subscription
-  const { data: existingSubscription } = await supabase
-    .from('subscriptions')
-    .select('*')
-    .eq('user_id', user.id)
-    .eq('status', 'active')
-    .single()
+  // Check if user already has an active subscription ONLY if buying a subscription
+  if (product.type === 'subscription') {
+    const { data: existingSubscription } = await supabase
+      .from('subscriptions')
+      .select('*')
+      .eq('user_id', user.id)
+      .eq('status', 'active')
+      .single()
 
-  if (existingSubscription) {
-    throw new Error("You already have an active subscription")
+    if (existingSubscription) {
+      throw new Error("You already have an active subscription")
+    }
   }
 
   // Check if user has a Stripe customer ID
@@ -50,8 +52,8 @@ export async function createCheckoutSession(productId: string) {
     })
     customerId = customer.id
 
-    // Store the customer ID - we'll need to add this column
-    // For now, we'll pass it via metadata
+    // Store the customer ID - updating profile
+    await supabase.from('profiles').update({ stripe_customer_id: customerId }).eq('id', user.id)
   } else {
     customerId = profile.stripe_customer_id
   }
@@ -68,19 +70,20 @@ export async function createCheckoutSession(productId: string) {
             description: product.description,
           },
           unit_amount: product.priceInCents,
-          recurring: {
+          recurring: product.type === 'subscription' && product.interval ? {
             interval: product.interval,
-          },
+          } : undefined,
         },
         quantity: 1,
       },
     ],
-    mode: 'subscription',
+    mode: product.type === 'subscription' ? 'subscription' : 'payment',
     ui_mode: 'embedded',
     return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     metadata: {
       user_id: user.id,
       product_id: productId,
+      type: product.type, // Pass type to webhook
     },
   })
 
@@ -91,14 +94,14 @@ export async function getCheckoutSession(sessionId: string) {
   const session = await stripe.checkout.sessions.retrieve(sessionId, {
     expand: ['subscription', 'customer'],
   })
-  
+
   return session
 }
 
 export async function createBillingPortalSession() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
-  
+
   if (!user) {
     throw new Error("Not authenticated")
   }
