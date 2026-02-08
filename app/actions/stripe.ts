@@ -40,10 +40,10 @@ export async function createCheckoutSession(productId: string) {
     .eq('id', user.id)
     .single()
 
-  let customerId: string | undefined
+  let customerId: string | undefined = profile?.stripe_customer_id
 
   // If user doesn't have a Stripe customer, create one
-  if (!profile?.stripe_customer_id) {
+  if (!customerId) {
     const customer = await stripe.customers.create({
       email: user.email,
       metadata: {
@@ -51,16 +51,25 @@ export async function createCheckoutSession(productId: string) {
       },
     })
     customerId = customer.id
-
     // Store the customer ID - updating profile
     await supabase.from('profiles').update({ stripe_customer_id: customerId }).eq('id', user.id)
   } else {
-    customerId = profile.stripe_customer_id
+    // If they HAVE a customer ID, make sure the metadata is synced
+    // This fixes the issue where old test customers didn't have the ID attached
+    await stripe.customers.update(customerId, {
+      metadata: {
+        supabase_user_id: user.id
+      }
+    })
   }
 
   const session = await stripe.checkout.sessions.create({
     customer: customerId,
-    customer_email: customerId ? undefined : user.email,
+    customer_update: {
+      address: 'auto',
+    },
+    // When customer is provided, customer_email must NOT be provided
+    // customer_email: customerId ? undefined : user.email, 
     line_items: [
       {
         price_data: {
