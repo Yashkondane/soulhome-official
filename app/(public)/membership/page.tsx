@@ -50,8 +50,9 @@ const guarantees = [
   }
 ]
 
-function formatPrice(cents: number, interval: string): string {
+function formatPrice(cents: number, interval?: string): string {
   const pounds = cents / 100
+  if (!interval) return `£${pounds.toFixed(0)}`
   return `£${pounds.toFixed(0)}/${interval === 'month' ? 'mo' : 'yr'}`
 }
 
