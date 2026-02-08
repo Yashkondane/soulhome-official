@@ -96,7 +96,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
     <div className="flex min-h-screen flex-col items-center justify-center bg-secondary/30 px-4 py-12">
       <Link href="/" className="mb-8 flex items-center gap-2">
         <Sparkles className="h-8 w-8 text-primary" />
-        <span className="font-serif text-2xl font-semibold text-foreground">Kundalini Awakening</span>
+        <span className="font-serif text-2xl font-semibold text-foreground">Soul Home</span>
       </Link>
 
       <Card className="w-full max-w-md border-border/50 text-center">
@@ -104,22 +104,25 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
             <CheckCircle2 className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="mt-4 font-serif text-2xl">Welcome to the Community!</CardTitle>
+          <CardTitle className="mt-4 font-serif text-2xl">Payment Successful!</CardTitle>
           <CardDescription className="mt-2">
             Your subscription is now active
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Thank you for joining us on this sacred journey. You now have full access to all our teachings, meditations, and resources.
+            Thank you for joining us. You now have full access to all our resources.
           </p>
+
+          <div className="bg-muted p-3 rounded-md text-xs text-muted-foreground break-all">
+            Order Reference: {params.session_id}
+          </div>
 
           <div className="rounded-lg bg-secondary/50 p-4 text-left">
             <h3 className="font-semibold text-foreground">What you can do now:</h3>
             <ul className="mt-3 space-y-3">
               {features.map((feature) => (
                 <li key={feature.text} className="flex items-center gap-3">
-                  <feature.icon className="h-5 w-5 text-primary" />
                   <span className="text-sm text-muted-foreground">{feature.text}</span>
                 </li>
               ))}
