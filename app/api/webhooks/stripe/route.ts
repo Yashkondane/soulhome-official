@@ -57,8 +57,8 @@ export async function POST(request: Request) {
           stripe_customer_id: subscription.customer as string,
           stripe_subscription_id: subscription.id,
           status: subscription.status,
-          current_period_start: toISO(subscription.current_period_start),
-          current_period_end: toISO(subscription.current_period_end),
+          current_period_start: toISO((subscription as any).current_period_start),
+          current_period_end: toISO((subscription as any).current_period_end),
           cancel_at_period_end: subscription.cancel_at_period_end,
         }
 
