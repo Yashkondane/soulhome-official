@@ -120,15 +120,8 @@ export function ResourceForm({ categories, resource }: ResourceFormProps) {
       let finalFileUrl = formData.file_url
       let finalThumbnailUrl = formData.thumbnail_url
 
-      // Upload PDF if new file selected
-      if (pdfFile) {
-        const fileExt = pdfFile.name.split('.').pop()
-        const fileName = `${formData.slug}-${Date.now()}.${fileExt}`
-        const filePath = `uploads/${fileName}`
+      // (PDF/Resource file upload logic removed - using Drive Link instead)
 
-        // Ensure you have a 'resources' bucket
-        finalFileUrl = await uploadFileToSupabase(pdfFile, 'resources', filePath)
-      }
 
       // Upload Thumbnail if new file selected/cropped
       if (thumbnailFile) {
@@ -265,24 +258,23 @@ export function ResourceForm({ categories, resource }: ResourceFormProps) {
           {/* Upload Column */}
           <div className="space-y-6">
             {/* PDF Upload */}
+            {/* Resource URL Input */}
             <div className="space-y-2 p-4 border rounded-md bg-gray-50/50">
               <Label className="flex items-center gap-2">
                 <Upload className="w-4 h-4" />
-                Resource File ({formData.type.toUpperCase()})
+                Google Drive Link ({formData.type.toUpperCase()})
               </Label>
+              <div className="text-xs text-muted-foreground mb-2">
+                Paste the full "Share" link from Google Drive.
+              </div>
 
               <Input
-                type="file"
-                accept={formData.type === 'pdf' ? '.pdf' : 'audio/*,video/*'}
-                onChange={handlePdfChange}
-                className="cursor-pointer"
+                type="url"
+                placeholder="https://drive.google.com/file/d/..."
+                value={formData.file_url}
+                onChange={(e) => setFormData(prev => ({ ...prev, file_url: e.target.value }))}
+                required
               />
-
-              {formData.file_url && !pdfFile && (
-                <p className="text-xs text-green-600 mt-1 flex items-center gap-1">
-                  ✓ Current file: ...{formData.file_url.slice(-20)}
-                </p>
-              )}
             </div>
 
             {/* Thumbnail Upload */}
@@ -338,8 +330,7 @@ export function ResourceForm({ categories, resource }: ResourceFormProps) {
                 <Input
                   id="file_size_bytes"
                   type="number"
-                  readOnly={!!pdfFile} // Auto-calculated if new file
-                  className={pdfFile ? "bg-gray-100" : ""}
+                  placeholder="Optional (approx)"
                   value={formData.file_size_bytes}
                   onChange={(e) => setFormData(prev => ({ ...prev, file_size_bytes: e.target.value }))}
                 />
