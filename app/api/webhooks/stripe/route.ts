@@ -95,15 +95,12 @@ export async function POST(request: Request) {
 
             if (insertError) {
               console.error("Error inserting subscription to Supabase:", insertError)
-              // We do NOT throw here, so Stripe gets a 200 OK and doesn't retry endlessly if it's a data issue
             } else {
               console.log("Subscription created successfully")
             }
 
           } else {
             console.error("No supabase_user_id found in customer metadata for subscription:", subscription.id)
-            // Log the customer object for debugging
-            console.log("Customer metadata:", customerData.metadata)
           }
         }
         break
@@ -112,10 +109,45 @@ export async function POST(request: Request) {
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription
 
+        // 1. Mark subscription as canceled
         await supabase
           .from('subscriptions')
           .update({ status: 'canceled' })
           .eq('stripe_subscription_id', subscription.id)
+
+        // 2. Revoke Google Drive Access for ALL downloads
+        // We need to find the user_id first
+        const { data: subData } = await supabase
+          .from('subscriptions')
+          .select('user_id')
+          .eq('stripe_subscription_id', subscription.id)
+          .single()
+
+        if (subData?.user_id) {
+          // Get all downloads with permission IDs
+          const { data: downloads } = await supabase
+            .from('downloads')
+            .select('drive_permission_id, drive_file_id')
+            .eq('user_id', subData.user_id)
+            .not('drive_permission_id', 'is', null)
+
+          if (downloads && downloads.length > 0) {
+            console.log(`Revoking ${downloads.length} Drive permissions for user ${subData.user_id}...`)
+
+            // We shouldn't await inside a loop if we can avoid it, but for API rate limits simple sequential is safer
+            // or Promise.all with concurrency limit. Given typical user doesn't have 1000s, Promise.all is ok-ish 
+            // but let's be safe and do sequential or batches.
+            for (const d of downloads) {
+              if (d.drive_permission_id && d.drive_file_id) {
+                try {
+                  await revokeFolderAccess(d.drive_permission_id, d.drive_file_id)
+                } catch (err) {
+                  console.error(`Failed to revoke ${d.drive_file_id}:`, err)
+                }
+              }
+            }
+          }
+        }
         break
       }
 

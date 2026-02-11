@@ -160,18 +160,19 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
             <CardHeader>
               <CardTitle className="text-lg">Download Resource</CardTitle>
               <CardDescription>
-                {subscription 
+                {subscription
                   ? "Save this resource for offline access"
                   : "Subscribe to download resources"}
               </CardDescription>
             </CardHeader>
             <CardContent>
               {subscription ? (
-                <DownloadButton 
+                <DownloadButton
                   resourceId={resource.id}
                   fileUrl={resource.file_url}
                   fileName={`${resource.slug}.${resource.type === 'pdf' ? 'pdf' : resource.type === 'audio' ? 'mp3' : 'mp4'}`}
                   hasDownloaded={!!existingDownload}
+                  slug={slug}
                 />
               ) : (
                 <div className="text-center">
