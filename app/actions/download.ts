@@ -60,11 +60,9 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
         permissionId = await grantFolderAccess(profile.email, fileId)
     } catch (err: any) {
         console.error("Drive Grant Error:", err)
-        // If it fails because "already shared" or similar, we might proceed, 
-        // but usually it throws if it fails. 
-        // Let's assume we can proceed if we can't share -> user will complain, but better than partial state?
-        // No, better to fail hard so they don't lose a download credit for nothing.
-        throw new Error("Failed to grant Google Drive access. Please contact support.")
+        // Expose the error message to the client for debugging
+        const errorMessage = err?.message || err?.error_description || "Unknown Drive API Error"
+        throw new Error(`Google Drive Error: ${errorMessage}`)
     }
 
     // 6. Record Download (Trigger will increment usage)
