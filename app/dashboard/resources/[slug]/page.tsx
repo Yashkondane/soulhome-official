@@ -182,89 +182,170 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
                 </div>
               )}
 
-              {resource.type === 'audio' && resource.file_url && (
-                <div className="rounded-lg bg-secondary p-6">
-                  <audio controls className="w-full">
-                    <source src={resource.file_url} />
-                    Your browser does not support the audio element.
-                  </audio>
-                </div>
+            </div>
               )}
-            </CardContent>
-          </Card>
-        </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Download Card */}
-          <Card className="border-border/50">
-            <CardHeader>
-              <CardTitle className="text-lg">Download Resource</CardTitle>
-              <CardDescription>
-                {subscription
-                  ? "Save this resource for offline access"
-                  : "Subscribe to download resources"}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {subscription ? (
-                <DownloadButton
-                  resourceId={resource.id}
-                  fileUrl={resource.file_url}
-                  fileName={`${resource.slug}.${resource.type === 'pdf' ? 'pdf' : resource.type === 'audio' ? 'mp3' : 'mp4'}`}
-                  hasDownloaded={!!existingDownload}
-                  slug={slug}
-                />
-              ) : (
-                <div className="text-center">
-                  <p className="text-sm text-muted-foreground">
-                    An active subscription is required to download resources.
-                  </p>
-                  <Button className="mt-4 w-full" asChild>
-                    <Link href="/membership">Subscribe Now</Link>
-                  </Button>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            {/* Audio Player Area */}
+            {resource.type === 'audio' && resource.file_url && (
+              <div className="rounded-lg bg-secondary p-6 relative">
+                {(() => {
+                  const driveFileId = getFileIdFromUrl(resource.file_url)
 
-          {/* Details Card */}
-          <Card className="border-border/50">
-            <CardHeader>
-              <CardTitle className="text-lg">Details</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {resource.duration_minutes && (
-                <div className="flex items-center gap-3">
-                  <Clock className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Duration</p>
-                    <p className="text-sm text-muted-foreground">{resource.duration_minutes} minutes</p>
-                  </div>
-                </div>
-              )}
-              {resource.file_size_bytes && (
-                <div className="flex items-center gap-3">
-                  <Download className="h-5 w-5 text-muted-foreground" />
-                  <div>
-                    <p className="text-sm font-medium text-foreground">File Size</p>
-                    <p className="text-sm text-muted-foreground">{formatFileSize(resource.file_size_bytes)}</p>
-                  </div>
-                </div>
-              )}
+                  if (driveFileId) {
+                    if (existingDownload) {
+                      return (
+                        <div className="aspect-[16/5] w-full">
+                          <iframe
+                            src={`https://drive.google.com/file/d/${driveFileId}/preview`}
+                            className="h-full w-full border-0 rounded-md"
+                            allow="autoplay"
+                            title={resource.title}
+                          />
+                        </div>
+                      )
+                    } else {
+                      return (
+                        <div className="flex flex-col items-center justify-center text-center p-8 bg-zinc-900/5 rounded-lg border border-dashed border-zinc-300">
+                          <Lock className="w-8 h-8 mb-2 text-muted-foreground" />
+                          <p className="font-semibold text-foreground">Audio Locked</p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {subscription ? "Click 'Open Resource' to listen." : "Subscribe to listen."}
+                          </p>
+                        </div>
+                      )
+                    }
+                  }
+
+                  return (
+                    <audio controls className="w-full">
+                      <source src={resource.file_url} />
+                      Your browser does not support the audio element.
+                    </audio>
+                  )
+                })()}
+              </div>
+            )}
+
+            {/* PDF Preview Area (New) */}
+            {resource.type === 'pdf' && resource.file_url && (
+              <div className="rounded-lg bg-secondary relative overflow-hidden">
+                {(() => {
+                  const driveFileId = getFileIdFromUrl(resource.file_url)
+
+                  if (driveFileId) {
+                    if (existingDownload) {
+                      // PDF Preview - give it some height
+                      return (
+                        <div className="aspect-[4/5] w-full bg-white">
+                          <iframe
+                            src={`https://drive.google.com/file/d/${driveFileId}/preview`}
+                            className="h-full w-full border-0"
+                            title={resource.title}
+                          />
+                        </div>
+                      )
+                    } else {
+                      return (
+                        <div className="aspect-[4/3] flex flex-col items-center justify-center bg-zinc-100 text-center p-6 border-2 border-dashed border-zinc-200 m-4 rounded-xl">
+                          <Lock className="w-10 h-10 mb-3 text-zinc-400" />
+                          <p className="font-serif text-lg font-semibold text-zinc-700">PDF Guide Locked</p>
+                          <p className="text-sm text-zinc-500 mt-2 max-w-xs">
+                            {subscription ? "Unlock this guide by clicking 'Open Resource'." : "Subscribe to access this guide."}
+                          </p>
+                        </div>
+                      )
+                    }
+                  }
+
+                  // Direct PDF Link fallback (just download link usually, but we can try embed)
+                  // Regular PDFs are hard to embed without a viewer, but browsers handle iframes ok often.
+                  return (
+                    <div className="aspect-[4/5] w-full bg-white">
+                      <iframe
+                        src={resource.file_url}
+                        className="h-full w-full border-0"
+                        title={resource.title}
+                      />
+                    </div>
+                  )
+                })()}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Sidebar */}
+      <div className="space-y-6">
+        {/* Download Card */}
+        <Card className="border-border/50">
+          <CardHeader>
+            <CardTitle className="text-lg">Download Resource</CardTitle>
+            <CardDescription>
+              {subscription
+                ? "Save this resource for offline access"
+                : "Subscribe to download resources"}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {subscription ? (
+              <DownloadButton
+                resourceId={resource.id}
+                fileUrl={resource.file_url}
+                fileName={`${resource.slug}.${resource.type === 'pdf' ? 'pdf' : resource.type === 'audio' ? 'mp3' : 'mp4'}`}
+                hasDownloaded={!!existingDownload}
+                slug={slug}
+              />
+            ) : (
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground">
+                  An active subscription is required to download resources.
+                </p>
+                <Button className="mt-4 w-full" asChild>
+                  <Link href="/membership">Subscribe Now</Link>
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Details Card */}
+        <Card className="border-border/50">
+          <CardHeader>
+            <CardTitle className="text-lg">Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {resource.duration_minutes && (
               <div className="flex items-center gap-3">
-                <Calendar className="h-5 w-5 text-muted-foreground" />
+                <Clock className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <p className="text-sm font-medium text-foreground">Added</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(resource.created_at).toLocaleDateString()}
-                  </p>
+                  <p className="text-sm font-medium text-foreground">Duration</p>
+                  <p className="text-sm text-muted-foreground">{resource.duration_minutes} minutes</p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
-        </div>
+            )}
+            {resource.file_size_bytes && (
+              <div className="flex items-center gap-3">
+                <Download className="h-5 w-5 text-muted-foreground" />
+                <div>
+                  <p className="text-sm font-medium text-foreground">File Size</p>
+                  <p className="text-sm text-muted-foreground">{formatFileSize(resource.file_size_bytes)}</p>
+                </div>
+              </div>
+            )}
+            <div className="flex items-center gap-3">
+              <Calendar className="h-5 w-5 text-muted-foreground" />
+              <div>
+                <p className="text-sm font-medium text-foreground">Added</p>
+                <p className="text-sm text-muted-foreground">
+                  {new Date(resource.created_at).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
+    </div >
   )
 }
