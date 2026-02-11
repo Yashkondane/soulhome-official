@@ -2,6 +2,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
+import { revokeFolderAccess } from "@/lib/google-drive"
 
 export async function POST(request: Request) {
   const body = await request.text()
