@@ -4,8 +4,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { ArrowLeft, BookOpen, Headphones, Play, FileText, Clock, Download, Calendar } from "lucide-react"
+import { ArrowLeft, BookOpen, Headphones, Play, FileText, Clock, Download, Calendar, Lock } from "lucide-react"
 import { DownloadButton } from "./download-button"
+import { getFileIdFromUrl } from "@/lib/google-drive"
 
 interface ResourcePageProps {
   params: Promise<{ slug: string }>
@@ -129,15 +130,55 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
 
               {/* Resource Preview/Player Area */}
               {resource.type === 'video' && resource.file_url && (
-                <div className="aspect-video overflow-hidden rounded-lg bg-secondary">
-                  <video
-                    controls
-                    className="h-full w-full"
-                    src={resource.file_url}
-                    poster={resource.thumbnail_url || undefined}
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                <div className="aspect-video overflow-hidden rounded-lg bg-secondary relative">
+                  {(() => {
+                    const driveFileId = getFileIdFromUrl(resource.file_url)
+
+                    // Case 1: Google Drive Video
+                    if (driveFileId) {
+                      if (existingDownload) {
+                        // Access Granted -> Show Player
+                        return (
+                          <iframe
+                            src={`https://drive.google.com/file/d/${driveFileId}/preview`}
+                            className="h-full w-full border-0"
+                            allow="autoplay; fullscreen"
+                            title={resource.title}
+                          />
+                        )
+                      } else {
+                        // Locked -> Show Lock Screen
+                        return (
+                          <div className="flex h-full w-full flex-col items-center justify-center bg-zinc-900/90 text-white p-6 text-center">
+                            {resource.thumbnail_url && (
+                              <div className="absolute inset-0 -z-10">
+                                <img src={resource.thumbnail_url} className="w-full h-full object-cover opacity-20 blur-sm" alt="" />
+                              </div>
+                            )}
+                            <Lock className="w-12 h-12 mb-4 text-white/50" />
+                            <p className="text-xl font-serif font-semibold">Video Locked</p>
+                            <p className="text-sm text-white/70 mt-2 max-w-sm">
+                              {subscription
+                                ? "Click the 'Open Resource' button on the right to unlock and watch this video."
+                                : "Subscribe to the membership to unlock and watch this video."}
+                            </p>
+                          </div>
+                        )
+                      }
+                    }
+
+                    // Case 2: Standard Direct Video File
+                    return (
+                      <video
+                        controls
+                        className="h-full w-full"
+                        src={resource.file_url}
+                        poster={resource.thumbnail_url || undefined}
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    )
+                  })()}
                 </div>
               )}
 

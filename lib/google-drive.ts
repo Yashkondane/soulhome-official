@@ -1,15 +1,28 @@
 import { google } from 'googleapis';
 
 // Initialize the Google Drive API client
-const auth = new google.auth.GoogleAuth({
-    credentials: {
-        client_email: process.env.GOOGLE_SERVICE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_SERVICE_PRIVATE_KEY?.replace(/\\n/g, '\n'), // Fix newlines in env var
-    },
-    scopes: ['https://www.googleapis.com/auth/drive'],
-});
+const getDriveClient = () => {
+    const clientEmail = process.env.GOOGLE_SERVICE_CLIENT_EMAIL;
+    const privateKey = process.env.GOOGLE_SERVICE_PRIVATE_KEY?.replace(/\\n/g, '\n');
 
-const drive = google.drive({ version: 'v3', auth });
+    if (!clientEmail || !privateKey) {
+        throw new Error("Missing Google Drive credentials. Please add GOOGLE_SERVICE_CLIENT_EMAIL and GOOGLE_SERVICE_PRIVATE_KEY to your Vercel Environment Variables.");
+    }
+
+    const auth = new google.auth.GoogleAuth({
+        credentials: {
+            client_email: clientEmail,
+            private_key: privateKey,
+        },
+        scopes: ['https://www.googleapis.com/auth/drive'],
+    });
+
+    return google.drive({ version: 'v3', auth });
+};
+
+// We lazy-load the drive client to avoid build-time errors if env vars are missing
+// but we want runtime errors if they are missing during execution.
+
 
 /**
  * Grants "Viewer" access to a specific folder for a user's email.
@@ -19,6 +32,7 @@ export async function grantFolderAccess(userEmail: string, folderId: string) {
         console.log(`Granting access to folder ${folderId} for ${userEmail}...`);
 
         // Create the permission
+        const drive = getDriveClient();
         const res = await drive.permissions.create({
             fileId: folderId,
             requestBody: {
@@ -46,6 +60,7 @@ export async function revokeFolderAccess(permissionId: string, folderId: string)
     try {
         console.log(`Revoking permission ${permissionId} on folder ${folderId}...`);
 
+        const drive = getDriveClient();
         await drive.permissions.delete({
             fileId: folderId,
             permissionId: permissionId,
@@ -64,6 +79,7 @@ export async function revokeFolderAccess(permissionId: string, folderId: string)
  */
 export async function findPermissionId(userEmail: string, folderId: string): Promise<string | null> {
     try {
+        const drive = getDriveClient();
         const res = await drive.permissions.list({
             fileId: folderId,
             fields: 'permissions(id, emailAddress)',
