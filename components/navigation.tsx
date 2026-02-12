@@ -46,24 +46,95 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
         : "bg-transparent border-b border-white/20 py-2"
     )}>
       <nav className={cn(
-        "mx-auto flex max-w-[1400px] items-center justify-between px-6 sm:px-8 lg:px-12 transition-all duration-300",
+        "mx-auto flex max-w-[1400px] items-center px-6 sm:px-8 lg:px-12 transition-all duration-300 relative",
         scrolled ? "h-20" : "h-28"
       )}>
-        <Link href="/" className="flex items-center gap-3">
-          <Image
-            src="/logo.png"
-            alt="Soulhome Logo"
-            width={80}
-            height={80}
-            className={cn(
-              "object-contain transition-all h-12 w-12 md:h-20 md:w-20",
-            )}
-          />
-          <span className={cn(
-            "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors hidden md:block",
-            isDarkText ? "text-primary" : "text-white"
-          )}>Soulhome</span>
-        </Link>
+        {/* Mobile Navigation Trigger - Absolute Right */}
+        <div className="absolute right-6 md:hidden z-50">
+          <Sheet open={open} onOpenChange={setOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className={isDarkText ? "text-primary" : "text-white"}>
+                <Menu className="h-6 w-6" />
+                <span className="sr-only">Toggle menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+              <div className="flex flex-col gap-6 pt-6">
+                <div className="flex items-center justify-between">
+                  <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
+                    <Image
+                      src="/logo.png"
+                      alt="Soulhome Logo"
+                      width={80}
+                      height={80}
+                      className="object-contain"
+                    />
+                    <span className="font-serif text-lg uppercase tracking-[0.2em] text-primary">Soulhome</span>
+                  </Link>
+                </div>
+                <div className="flex flex-col gap-4">
+                  {navLinks.map((link) => (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      onClick={() => setOpen(false)}
+                      className={cn(
+                        "text-lg font-medium transition-colors hover:text-primary",
+                        pathname === link.href
+                          ? "text-primary"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      {link.label}
+                    </Link>
+                  ))}
+                </div>
+                <div className="flex flex-col gap-3 pt-4 border-t">
+                  {isLoggedIn ? (
+                    <>
+                      {isAdmin && (
+                        <Button variant="outline" asChild className="w-full bg-transparent">
+                          <Link href="/admin" onClick={() => setOpen(false)}>Admin</Link>
+                        </Button>
+                      )}
+                      <Button asChild className="w-full">
+                        <Link href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Button variant="outline" asChild className="w-full bg-transparent">
+                        <Link href="/auth/login" onClick={() => setOpen(false)}>Sign In</Link>
+                      </Button>
+                      <Button asChild className="w-full">
+                        <Link href="/membership" onClick={() => setOpen(false)}>Join Now</Link>
+                      </Button>
+                    </>
+                  )}
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
+
+        {/* Logo - Centered on Mobile, Left on Desktop */}
+        <div className="flex-1 flex justify-center md:justify-start">
+          <Link href="/" className="flex items-center gap-3">
+            <Image
+              src="/logo.png"
+              alt="Soulhome Logo"
+              width={80}
+              height={80}
+              className={cn(
+                "object-contain transition-all h-16 w-16 md:h-20 md:w-20",
+              )}
+            />
+            <span className={cn(
+              "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors hidden md:block",
+              isDarkText ? "text-primary" : "text-white"
+            )}>Soulhome</span>
+          </Link>
+        </div>
 
         {/* Desktop Navigation */}
         <div className="hidden items-center gap-8 md:flex">
@@ -117,71 +188,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
           )}
         </div>
 
-        {/* Mobile Navigation */}
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild className="md:hidden">
-            <Button variant="ghost" size="icon">
-              <Menu className="h-5 w-5" />
-              <span className="sr-only">Toggle menu</span>
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-            <div className="flex flex-col gap-6 pt-6">
-              <div className="flex items-center justify-between">
-                <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
-                  <Image
-                    src="/logo.png"
-                    alt="Soulhome Logo"
-                    width={80}
-                    height={80}
-                    className="object-contain"
-                  />
-                  <span className="font-serif text-lg uppercase tracking-[0.2em] text-primary">Soulhome</span>
-                </Link>
-              </div>
-              <div className="flex flex-col gap-4">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    onClick={() => setOpen(false)}
-                    className={cn(
-                      "text-lg font-medium transition-colors hover:text-primary",
-                      pathname === link.href
-                        ? "text-primary"
-                        : "text-muted-foreground"
-                    )}
-                  >
-                    {link.label}
-                  </Link>
-                ))}
-              </div>
-              <div className="flex flex-col gap-3 pt-4 border-t">
-                {isLoggedIn ? (
-                  <>
-                    {isAdmin && (
-                      <Button variant="outline" asChild className="w-full bg-transparent">
-                        <Link href="/admin" onClick={() => setOpen(false)}>Admin</Link>
-                      </Button>
-                    )}
-                    <Button asChild className="w-full">
-                      <Link href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="outline" asChild className="w-full bg-transparent">
-                      <Link href="/auth/login" onClick={() => setOpen(false)}>Sign In</Link>
-                    </Button>
-                    <Button asChild className="w-full">
-                      <Link href="/membership" onClick={() => setOpen(false)}>Join Now</Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </div>
-          </SheetContent>
-        </Sheet>
+
       </nav>
     </header>
   )
