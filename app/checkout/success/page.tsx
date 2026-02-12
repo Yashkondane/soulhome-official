@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation"
 import Link from "next/link"
+import Image from "next/image"
 import { createClient } from "@/lib/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -94,8 +95,15 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-secondary/30 px-4 py-12">
-      <Link href="/" className="mb-8 flex items-center gap-2">
-        <Sparkles className="h-8 w-8 text-primary" />
+      <Link href="/" className="mb-8 flex flex-col items-center gap-4">
+        <div className="relative h-24 w-24">
+          <Image
+            src="/logo.png"
+            alt="Soul Home"
+            fill
+            className="object-contain"
+          />
+        </div>
         <span className="font-serif text-2xl font-semibold text-foreground">Soul Home</span>
       </Link>
 

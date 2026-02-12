@@ -14,7 +14,7 @@ export function AuthSplitLayout({ children }: AuthSplitLayoutProps) {
                 <div className="mb-10 flex justify-center lg:hidden">
                     <Link href="/" className="flex items-center gap-2">
                         <Image
-                            src="/soulhome_logo.png"
+                            src="/logo.png"
                             alt="Soulhome Logo"
                             width={50}
                             height={50}
@@ -45,11 +45,11 @@ export function AuthSplitLayout({ children }: AuthSplitLayoutProps) {
                 <div className="relative z-10 flex h-full w-full flex-col items-center justify-center p-12 text-center text-white">
                     <div className="mb-8 flex flex-col items-center gap-4">
                         <Image
-                            src="/soulhome_logo.png"
+                            src="/logo.png"
                             alt="Soulhome Logo"
                             width={120}
                             height={120}
-                            className="object-contain brightness-0 invert drop-shadow-lg"
+                            className="object-contain drop-shadow-lg"
                         />
                         <h1 className="font-serif text-5xl font-bold uppercase tracking-[0.2em] drop-shadow-lg">Soulhome</h1>
                     </div>

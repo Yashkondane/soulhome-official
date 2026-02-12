@@ -13,7 +13,7 @@ interface ResourcesPageProps {
 export default async function ResourcesPage({ searchParams }: ResourcesPageProps) {
   const params = await searchParams
   const supabase = await createClient()
-  
+
   // Build query
   let query = supabase
     .from('resources')
@@ -69,8 +69,8 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
       </div>
 
       {/* Filters */}
-      <ResourceFilters 
-        categories={categories || []} 
+      <ResourceFilters
+        categories={categories || []}
         currentType={params.type}
         currentCategory={params.category}
         currentSearch={params.search}
@@ -83,27 +83,47 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
             const Icon = typeIcons[resource.type as keyof typeof typeIcons] || FileText
             const typeLabel = typeLabels[resource.type as keyof typeof typeLabels] || resource.type
             const typeColor = typeColors[resource.type as keyof typeof typeColors] || "bg-secondary text-foreground"
-            
+
             return (
-              <Card key={resource.id} className="group border-border/50 transition-all hover:border-primary/30 hover:shadow-lg">
-                <CardHeader className="pb-3">
-                  <div className="flex items-start justify-between">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                      <Icon className="h-5 w-5 text-primary" />
+              <Card key={resource.id} className="group overflow-hidden border-border/50 bg-card/50 backdrop-blur-sm transition-all hover:border-primary/30 hover:shadow-lg hover:-translate-y-1">
+                <CardHeader className="p-0">
+                  <div className="aspect-video w-full overflow-hidden bg-muted relative group-hover:opacity-90 transition-opacity">
+                    {resource.thumbnail_url ? (
+                      <img
+                        src={resource.thumbnail_url}
+                        alt={resource.title}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="flex h-full w-full items-center justify-center bg-secondary/30">
+                        <Icon className="h-12 w-12 text-primary/20" />
+                      </div>
+                    )}
+                    <div className="absolute top-2 right-2">
+                      <Badge variant="secondary" className={`${typeColor} backdrop-blur-md bg-white/80 dark:bg-black/50 border-0`}>
+                        {typeLabel}
+                      </Badge>
                     </div>
-                    <Badge variant="secondary" className={typeColor}>
-                      {typeLabel}
-                    </Badge>
                   </div>
-                  <CardTitle className="mt-4 line-clamp-2 font-serif text-lg group-hover:text-primary">
-                    {resource.title}
-                  </CardTitle>
-                  <CardDescription className="line-clamp-2">
+                  <div className="px-5 pt-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      {resource.category && (
+                        <Badge variant="outline" className="text-[10px] h-5 px-2 text-muted-foreground border-primary/20">
+                          {resource.category.name}
+                        </Badge>
+                      )}
+                    </div>
+                    <CardTitle className="font-serif text-lg group-hover:text-primary transition-colors line-clamp-1">
+                      {resource.title}
+                    </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent className="px-5 pb-5">
+                  <CardDescription className="line-clamp-2 text-xs mb-4">
                     {resource.description || 'No description available'}
                   </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="flex items-center justify-between">
+
+                  <div className="flex items-center justify-between mt-auto">
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
                       {resource.duration_minutes && (
                         <span className="flex items-center gap-1">
@@ -111,14 +131,10 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
                           {resource.duration_minutes} min
                         </span>
                       )}
-                      {resource.category && (
-                        <span>{resource.category.name}</span>
-                      )}
                     </div>
-                    <Button size="sm" variant="ghost" asChild>
+                    <Button size="sm" className="rounded-full px-4" asChild>
                       <Link href={`/dashboard/resources/${resource.slug}`}>
                         View
-                        <ArrowRight className="ml-1 h-3 w-3" />
                       </Link>
                     </Button>
                   </div>

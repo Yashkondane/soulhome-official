@@ -13,7 +13,7 @@ export default async function DashboardPage() {
   } catch {
     return null
   }
-  
+
   if (!user) {
     return null
   }
@@ -75,24 +75,25 @@ export default async function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif text-3xl font-bold text-foreground">Welcome Back</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="font-serif text-3xl font-bold text-foreground tracking-tight">Welcome Back</h1>
+        <p className="mt-2 text-muted-foreground text-lg">
           Continue your spiritual journey with our latest resources.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="border-border/50 transition-all hover:border-primary/30">
+          <Card key={stat.label} className="group relative overflow-hidden border-border/50 bg-gradient-to-br from-card/50 to-card/10 backdrop-blur-sm transition-all duration-300 hover:shadow-lg hover:border-primary/20 hover:-translate-y-1">
+            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
             <Link href={stat.href}>
-              <CardContent className="flex items-center gap-4 p-6">
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10">
+              <CardContent className="flex items-center gap-4 p-6 relative z-10">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                   <stat.icon className="h-6 w-6 text-primary" />
                 </div>
                 <div>
                   <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
+                  <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
                 </div>
               </CardContent>
             </Link>
@@ -102,7 +103,7 @@ export default async function DashboardPage() {
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Recent Resources */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-sm">
           <CardHeader>
             <CardTitle className="font-serif">New Resources</CardTitle>
             <CardDescription>Recently added to the library</CardDescription>
@@ -145,7 +146,7 @@ export default async function DashboardPage() {
         </Card>
 
         {/* Recent Downloads */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm shadow-sm">
           <CardHeader>
             <CardTitle className="font-serif">Recent Downloads</CardTitle>
             <CardDescription>Your downloaded resources</CardDescription>
@@ -154,8 +155,8 @@ export default async function DashboardPage() {
             {recentDownloads && recentDownloads.length > 0 ? (
               <div className="space-y-4">
                 {recentDownloads.map((download) => {
-                  const Icon = download.resource?.type 
-                    ? typeIcons[download.resource.type as keyof typeof typeIcons] 
+                  const Icon = download.resource?.type
+                    ? typeIcons[download.resource.type as keyof typeof typeIcons]
                     : FileText
                   return (
                     <div

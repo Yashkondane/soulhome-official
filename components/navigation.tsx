@@ -51,13 +51,14 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
       )}>
         <Link href="/" className="flex items-center gap-3">
           <Image
-            src="/soulhome_logo.png"
+            src="/logo.png"
             alt="Soulhome Logo"
             width={80}
             height={80}
             className={cn(
               "object-contain transition-all",
-              isDarkText ? "brightness-0" : "brightness-0 invert"
+              // isDarkText ? "brightness-0" : "brightness-0 invert" 
+              // Removed brightness filters to show original logo colors as requested
             )}
           />
           <span className={cn(
@@ -131,7 +132,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
               <div className="flex items-center justify-between">
                 <Link href="/" className="flex items-center gap-3" onClick={() => setOpen(false)}>
                   <Image
-                    src="/soulhome_logo.png"
+                    src="/logo.png"
                     alt="Soulhome Logo"
                     width={80}
                     height={80}

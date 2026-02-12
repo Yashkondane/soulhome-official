@@ -5,41 +5,53 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Soulhome Aesthetic Palette - Purple & ethereal */
-  --background: oklch(0.99 0.005 290);
-  /* Very light purple/white tint, removing beige */
-  --foreground: oklch(0.25 0.04 290);
-  /* Deep rich purple-black text */
+  /* Soulhome Aesthetic Palette - Deep Purple & Ethereal */
+  --background: oklch(0.98 0.01 290);
+  /* Slightly more purple tint */
+  --foreground: oklch(0.20 0.04 285);
+  /* Darker purple-black for better contrast */
+
   --card: oklch(1 0 0);
-  /* Pure white cards */
-  --card-foreground: oklch(0.25 0.04 290);
+  --card-foreground: oklch(0.20 0.04 285);
+
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.25 0.04 290);
-  --primary: oklch(0.62 0.08 290);
-  /* Main soft purple */
-  --primary-foreground: oklch(0.98 0.005 290);
-  --secondary: oklch(0.96 0.01 290);
-  /* Very light purple for backgrounds */
-  --secondary-foreground: oklch(0.25 0.04 290);
-  --muted: oklch(0.94 0.01 290);
-  --muted-foreground: oklch(0.55 0.06 290);
-  --accent: oklch(0.70 0.10 330);
-  /* Soft rose/pink accent instead of bronze */
-  --accent-foreground: oklch(0.98 0.005 290);
+  --popover-foreground: oklch(0.20 0.04 285);
+
+  --primary: oklch(0.55 0.15 290);
+  /* More vibrant/deeper purple */
+  --primary-foreground: oklch(0.98 0.01 290);
+
+  --secondary: oklch(0.95 0.02 290);
+  /* Noticeable purple tint */
+  --secondary-foreground: oklch(0.35 0.08 290);
+  /* Purple-grey */
+
+  --muted: oklch(0.92 0.02 290);
+  --muted-foreground: oklch(0.50 0.05 290);
+
+  --accent: oklch(0.85 0.05 290);
+  /* Soft purple accent */
+  --accent-foreground: oklch(0.20 0.04 285);
+
   --destructive: oklch(0.6 0.15 15);
   --destructive-foreground: oklch(0.98 0.005 290);
-  --border: oklch(0.90 0.02 290);
-  --input: oklch(0.90 0.02 290);
-  --ring: oklch(0.62 0.08 290);
+
+  --border: oklch(0.90 0.03 290);
+  /* Purple-tinted border */
+  --input: oklch(0.90 0.03 290);
+  --ring: oklch(0.55 0.15 290);
+
   --radius: 0.75rem;
-  --sidebar: oklch(0.98 0.005 290);
-  --sidebar-foreground: oklch(0.25 0.04 290);
-  --sidebar-primary: oklch(0.62 0.08 290);
-  --sidebar-primary-foreground: oklch(0.98 0.005 290);
-  --sidebar-accent: oklch(0.96 0.01 290);
-  --sidebar-accent-foreground: oklch(0.25 0.04 290);
-  --sidebar-border: oklch(0.90 0.02 290);
-  --sidebar-ring: oklch(0.62 0.08 290);
+
+  --sidebar: oklch(0.97 0.015 290);
+  /* Light purple sidebar */
+  --sidebar-foreground: oklch(0.25 0.04 285);
+  --sidebar-primary: oklch(0.55 0.15 290);
+  --sidebar-primary-foreground: oklch(0.98 0.01 290);
+  --sidebar-accent: oklch(0.94 0.03 290);
+  --sidebar-accent-foreground: oklch(0.25 0.04 285);
+  --sidebar-border: oklch(0.88 0.03 290);
+  --sidebar-ring: oklch(0.55 0.15 290);
 }
 
 .dark {

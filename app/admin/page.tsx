@@ -62,23 +62,23 @@ export default async function AdminPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif text-3xl font-bold text-foreground">Admin Overview</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="font-serif text-3xl font-bold text-foreground tracking-tight">Admin Overview</h1>
+        <p className="mt-2 text-muted-foreground text-lg">
           Monitor your membership platform at a glance.
         </p>
       </div>
 
       {/* Stats Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
-          <Card key={stat.label} className="border-border/50">
+          <Card key={stat.label} className="border-border/50 bg-gradient-to-br from-card/50 to-card/10 backdrop-blur-sm shadow-sm transition-all hover:shadow-md">
             <CardContent className="flex items-center gap-4 p-6">
-              <div className={`flex h-12 w-12 items-center justify-center rounded-lg bg-secondary`}>
+              <div className={`flex h-12 w-12 items-center justify-center rounded-xl bg-secondary`}>
                 <stat.icon className={`h-6 w-6 ${stat.color}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                <p className="text-sm text-muted-foreground">{stat.label}</p>
+                <p className="text-sm text-muted-foreground font-medium">{stat.label}</p>
               </div>
             </CardContent>
           </Card>
@@ -86,8 +86,8 @@ export default async function AdminPage() {
       </div>
 
       {/* Quick Stats */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <Card className="border-border/50">
+      <div className="grid gap-6 sm:grid-cols-2">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -102,7 +102,7 @@ export default async function AdminPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-border/50">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
@@ -121,7 +121,7 @@ export default async function AdminPage() {
 
       <div className="grid gap-8 lg:grid-cols-2">
         {/* Recent Members */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="font-serif">Recent Members</CardTitle>
             <CardDescription>Newly registered users</CardDescription>
@@ -153,7 +153,7 @@ export default async function AdminPage() {
         </Card>
 
         {/* Recent Downloads */}
-        <Card className="border-border/50">
+        <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="font-serif">Recent Downloads</CardTitle>
             <CardDescription>Latest resource downloads</CardDescription>

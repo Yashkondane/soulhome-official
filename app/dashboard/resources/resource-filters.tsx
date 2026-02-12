@@ -17,11 +17,11 @@ interface ResourceFiltersProps {
   currentSearch?: string
 }
 
-export function ResourceFilters({ 
-  categories, 
-  currentType, 
-  currentCategory, 
-  currentSearch 
+export function ResourceFilters({
+  categories,
+  currentType,
+  currentCategory,
+  currentSearch
 }: ResourceFiltersProps) {
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -30,7 +30,7 @@ export function ResourceFilters({
 
   function updateFilters(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString())
-    
+
     if (value && value !== 'all') {
       params.set(key, value)
     } else {
@@ -57,61 +57,69 @@ export function ResourceFilters({
   const hasFilters = currentType || currentCategory || currentSearch
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-      <form onSubmit={handleSearch} className="flex gap-2 sm:max-w-sm sm:flex-1">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <Input
-            placeholder="Search resources..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="pl-9"
-          />
-        </div>
-        <Button type="submit" variant="secondary" disabled={isPending}>
-          Search
-        </Button>
-      </form>
-
-      <div className="flex flex-wrap items-center gap-2">
-        <Select
-          value={currentType || 'all'}
-          onValueChange={(value) => updateFilters('type', value)}
-        >
-          <SelectTrigger className="w-[140px]">
-            <SelectValue placeholder="Type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="pdf">PDF Guides</SelectItem>
-            <SelectItem value="audio">Audio</SelectItem>
-            <SelectItem value="video">Video</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={currentCategory || 'all'}
-          onValueChange={(value) => updateFilters('category', value)}
-        >
-          <SelectTrigger className="w-[160px]">
-            <SelectValue placeholder="Category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {categories.map((category) => (
-              <SelectItem key={category.id} value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-
-        {hasFilters && (
-          <Button variant="ghost" size="sm" onClick={clearFilters}>
-            <X className="mr-1 h-4 w-4" />
-            Clear
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <form onSubmit={handleSearch} className="flex gap-2 sm:max-w-sm sm:flex-1">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Search resources..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="pl-9"
+            />
+          </div>
+          <Button type="submit" variant="secondary" disabled={isPending}>
+            Search
           </Button>
-        )}
+        </form>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <Select
+            value={currentType || 'all'}
+            onValueChange={(value) => updateFilters('type', value)}
+          >
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="All Types" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All Types</SelectItem>
+              <SelectItem value="pdf">PDF Guides</SelectItem>
+              <SelectItem value="audio">Audio</SelectItem>
+              <SelectItem value="video">Video</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {hasFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters}>
+              <X className="mr-1 h-4 w-4" />
+              Clear
+            </Button>
+          )}
+        </div>
+      </div>
+
+      {/* Category Pills */}
+      <div className="flex flex-wrap items-center gap-2 pb-2">
+        <Button
+          variant={!currentCategory || currentCategory === 'all' ? "default" : "outline"}
+          size="sm"
+          onClick={() => updateFilters('category', 'all')}
+          className="rounded-full"
+        >
+          All Categories
+        </Button>
+        {categories.map((category) => (
+          <Button
+            key={category.id}
+            variant={currentCategory === category.id ? "default" : "outline"}
+            size="sm"
+            onClick={() => updateFilters('category', category.id)}
+            className="rounded-full"
+          >
+            {category.name}
+          </Button>
+        ))}
       </div>
     </div>
   )

@@ -2,7 +2,7 @@ import { headers } from "next/headers"
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
-import { revokeFolderAccess } from "@/lib/google-drive"
+import { revokeFolderAccess, grantFolderAccess } from "@/lib/google-drive"
 
 export async function POST(request: Request) {
   const body = await request.text()
@@ -98,6 +98,19 @@ export async function POST(request: Request) {
               console.error("Error inserting subscription to Supabase:", insertError)
             } else {
               console.log("Subscription created successfully")
+
+              // Grant Google Drive Access
+              try {
+                const folderId = process.env.GOOGLE_DRIVE_RESOURCE_ID
+                if (folderId && customerData.email) {
+                  await grantFolderAccess(customerData.email, folderId)
+                } else {
+                  console.warn("Skipping Drive Access: Missing GOOGLE_DRIVE_RESOURCE_ID or customer email.")
+                }
+              } catch (driveErr) {
+                console.error("Failed to grant Drive access:", driveErr)
+                // We don't fail the webhook, just log it
+              }
             }
 
           } else {

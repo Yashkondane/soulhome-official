@@ -23,11 +23,11 @@ export function Footer() {
           <div className="md:col-span-2">
             <Link href="/" className="flex items-center gap-3">
               <Image
-                src="/soulhome_logo.png"
+                src="/logo.png"
                 alt="Soulhome Logo"
                 width={60}
                 height={60}
-                className="object-contain brightness-0"
+                className="object-contain"
               />
               <span className="font-serif text-lg uppercase tracking-[0.2em] font-semibold text-primary">Soulhome</span>
             </Link>
