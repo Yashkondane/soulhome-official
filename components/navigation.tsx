@@ -56,13 +56,11 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
             width={80}
             height={80}
             className={cn(
-              "object-contain transition-all",
-              // isDarkText ? "brightness-0" : "brightness-0 invert" 
-              // Removed brightness filters to show original logo colors as requested
+              "object-contain transition-all h-12 w-12 md:h-20 md:w-20",
             )}
           />
           <span className={cn(
-            "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors",
+            "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors hidden md:block",
             isDarkText ? "text-primary" : "text-white"
           )}>Soulhome</span>
         </Link>
