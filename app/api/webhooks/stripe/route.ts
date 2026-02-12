@@ -49,17 +49,30 @@ export async function POST(request: Request) {
           .single()
 
 
-        const toISO = (timestamp: number | null | undefined) => {
-          if (!timestamp) return new Date().toISOString()
+        const toISO = (timestamp: number | null | undefined, context: string) => {
+          if (!timestamp) {
+            console.warn(`[Stripe Webhook] Missing timestamp for ${context} in subscription ${subscription.id}`)
+            // If it's undefined, try to find it in other casing or return a safe default (Start=Now, End=Now+30d?)
+            // But usually this means the property access failed.
+            // Let's log keys to be sure.
+            // console.log('Subscription Keys:', Object.keys(subscription))
+            return new Date().toISOString()
+          }
           return new Date(timestamp * 1000).toISOString()
         }
+
+        // Access properties safely, defaulting to snake_case but checking if they are missing
+        const currentPeriodStart = (subscription as any).current_period_start
+        const currentPeriodEnd = (subscription as any).current_period_end
+
+        console.log(`[Stripe Webhook] Processing subscription ${subscription.id}. Start: ${currentPeriodStart}, End: ${currentPeriodEnd}`)
 
         const subscriptionData = {
           stripe_customer_id: subscription.customer as string,
           stripe_subscription_id: subscription.id,
           status: subscription.status,
-          current_period_start: toISO((subscription as any).current_period_start),
-          current_period_end: toISO((subscription as any).current_period_end),
+          current_period_start: toISO(currentPeriodStart, 'start'),
+          current_period_end: toISO(currentPeriodEnd, 'end'),
           cancel_at_period_end: subscription.cancel_at_period_end,
         }
 
@@ -177,8 +190,8 @@ export async function POST(request: Request) {
             .from('subscriptions')
             .update({
               status: subscription.status,
-              current_period_start: new Date((subscription as unknown as { current_period_start: number }).current_period_start * 1000).toISOString(),
-              current_period_end: new Date((subscription as unknown as { current_period_end: number }).current_period_end * 1000).toISOString(),
+              current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
+              current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
             })
             .eq('stripe_subscription_id', subscription.id)
         }
