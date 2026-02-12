@@ -117,8 +117,8 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
           </Sheet>
         </div>
 
-        {/* Logo - Centered on Mobile, Left on Desktop */}
-        <div className="flex-1 flex justify-center md:justify-start">
+        {/* Logo - Centered on Mobile using Absolute Positioning, Left on Desktop */}
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:flex-1 md:flex md:justify-start">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.png"
