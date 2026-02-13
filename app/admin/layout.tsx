@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/server"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Library, Users, FolderOpen, LogOut, ArrowLeft } from "lucide-react"
+import { LayoutDashboard, Library, Users, FolderOpen, LogOut, ArrowLeft, Home } from "lucide-react"
 import { signOut } from "@/app/actions/auth"
 import Image from "next/image"
 
@@ -60,6 +60,12 @@ export default async function AdminLayout({
             <span className="font-serif text-xl font-semibold text-foreground tracking-wide">Admin Panel</span>
           </Link>
           <div className="flex items-center gap-4">
+            <Button variant="ghost" size="sm" asChild>
+              <Link href="/">
+                <Home className="mr-2 h-4 w-4" />
+                Home
+              </Link>
+            </Button>
             <Button variant="ghost" size="sm" asChild>
               <Link href="/dashboard">
                 <ArrowLeft className="mr-2 h-4 w-4" />

@@ -60,7 +60,14 @@ export async function POST(request: Request) {
 
         // Access properties safely, defaulting to snake_case but checking if they are missing
         const currentPeriodStart = (subscription as any).current_period_start
-        const currentPeriodEnd = (subscription as any).current_period_end
+        let currentPeriodEnd = (subscription as any).current_period_end
+
+        // Safety check: if end <= start or missing, add 30 days
+        if (!currentPeriodEnd || (currentPeriodStart && currentPeriodEnd <= currentPeriodStart)) {
+          console.warn(`[Stripe Webhook] Invalid or equal period end for subscription ${subscription.id}. Adjusting.`)
+          const start = currentPeriodStart || Math.floor(Date.now() / 1000)
+          currentPeriodEnd = start + 30 * 24 * 60 * 60
+        }
 
         console.log(`[Stripe Webhook] Processing subscription ${subscription.id}. Start: ${currentPeriodStart}, End: ${currentPeriodEnd}`)
 
