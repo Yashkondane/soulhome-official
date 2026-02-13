@@ -108,7 +108,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
                         <Link href="/auth/login" onClick={() => setOpen(false)}>Sign In</Link>
                       </Button>
                       <Button asChild className="w-full">
-                        <Link href="/membership" onClick={() => setOpen(false)}>Join Now</Link>
+                        <Link href="/membership" onClick={() => setOpen(false)}>Sign Up</Link>
                       </Button>
                     </>
                   )}
@@ -183,7 +183,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
               <Button asChild className={cn(
                 isDarkText ? "bg-primary text-white hover:bg-primary/90" : "bg-white text-primary hover:bg-white/90"
               )}>
-                <Link href="/membership">Join Now</Link>
+                <Link href="/membership">Sign Up</Link>
               </Button>
             </>
           )}
