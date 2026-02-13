@@ -55,25 +55,25 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         console.error("Error fetching subscription:", fetchError)
       }
 
+      // Determine start and end times with robust safety checks
+      const nowSeconds = Math.floor(Date.now() / 1000)
+      let startInput = (subscription as any).current_period_start
+      let endInput = (subscription as any).current_period_end
+
+      // Fallback if missing
+      if (!startInput) startInput = nowSeconds
+      if (!endInput) endInput = startInput + 30 * 24 * 60 * 60
+
+      // Safety check: ensure end is after start. If they are equal or end is before, add 30 days.
+      if (endInput <= startInput) {
+        console.warn("Detected end date <= start date, adjusting by 30 days")
+        endInput = startInput + 30 * 24 * 60 * 60
+      }
+
+      const current_period_start = new Date(startInput * 1000).toISOString()
+      const current_period_end = new Date(endInput * 1000).toISOString()
+
       if (existingSub) {
-        // Determine start and end times
-        const nowSeconds = Math.floor(Date.now() / 1000)
-        let startInput = (subscription as any).current_period_start
-        let endInput = (subscription as any).current_period_end
-
-        // Fallback if missing
-        if (!startInput) startInput = nowSeconds
-        if (!endInput) endInput = startInput + 30 * 24 * 60 * 60
-
-        // Safety check: ensure end is after start (min 28 days to be safe for monthly)
-        if (endInput <= startInput) {
-          console.warn("Detected end date <= start date, adjusting by 30 days")
-          endInput = startInput + 30 * 24 * 60 * 60
-        }
-
-        const current_period_start = new Date(startInput * 1000).toISOString()
-        const current_period_end = new Date(endInput * 1000).toISOString()
-
         // Update existing subscription
         const { error: updateError } = await supabaseAdmin.from('subscriptions').update({
           status: 'active', // Force active since we are in success page
@@ -93,8 +93,8 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           status: 'active', // Force active
           plan_id: session.metadata?.product_id || 'monthly-membership',
           used_downloads: 0,
-          current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
-          current_period_end: new Date(((subscription as any).current_period_end || (Date.now() / 1000) + 30 * 24 * 60 * 60) * 1000).toISOString(),
+          current_period_start,
+          current_period_end,
           cancel_at_period_end: subscription.cancel_at_period_end,
         })
 
