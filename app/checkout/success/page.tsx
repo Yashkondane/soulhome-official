@@ -60,7 +60,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         const { error: updateError } = await supabaseAdmin.from('subscriptions').update({
           status: 'active', // Force active since we are in success page
           current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
-          current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
+          current_period_end: new Date(((subscription as any).current_period_end || (Date.now() / 1000) + 30 * 24 * 60 * 60) * 1000).toISOString(),
           cancel_at_period_end: subscription.cancel_at_period_end,
         }).eq('id', existingSub.id)
 
@@ -76,7 +76,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
           plan_id: session.metadata?.product_id || 'monthly-membership',
           used_downloads: 0,
           current_period_start: new Date(((subscription as any).current_period_start || Date.now() / 1000) * 1000).toISOString(),
-          current_period_end: new Date(((subscription as any).current_period_end || Date.now() / 1000) * 1000).toISOString(),
+          current_period_end: new Date(((subscription as any).current_period_end || (Date.now() / 1000) + 30 * 24 * 60 * 60) * 1000).toISOString(),
           cancel_at_period_end: subscription.cancel_at_period_end,
         })
 

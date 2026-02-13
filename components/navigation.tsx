@@ -11,9 +11,10 @@ import Image from "next/image"
 
 const navLinks = [
   { href: "/", label: "Home" },
+  { href: "/services", label: "Services" },
   { href: "/about", label: "About" },
-  { href: "/membership", label: "Membership" },
   { href: "/contact", label: "Contact" },
+  { href: "/terms", label: "T&C" },
 ]
 
 interface NavigationProps {
@@ -43,7 +44,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
       "fixed top-0 left-0 right-0 z-50 w-full transition-all duration-300",
       scrolled
         ? "bg-primary/95 backdrop-blur-md shadow-lg py-0 border-b-0"
-        : "bg-transparent border-b border-white/20 py-2"
+        : "bg-transparent py-2"
     )}>
       <nav className={cn(
         "mx-auto flex max-w-[1400px] items-center px-6 sm:px-8 lg:px-12 transition-all duration-300 relative",
@@ -98,7 +99,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
                         </Button>
                       )}
                       <Button asChild className="w-full">
-                        <Link href="/dashboard" onClick={() => setOpen(false)}>Dashboard</Link>
+                        <Link href="/dashboard" onClick={() => setOpen(false)}>My Journey</Link>
                       </Button>
                     </>
                   ) : (
@@ -168,7 +169,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
                 "hover:bg-white/10",
                 isDarkText ? "text-primary hover:text-primary/80 hover:bg-primary/10" : "text-white hover:text-white/80"
               )}>
-                <Link href="/dashboard">Dashboard</Link>
+                <Link href="/dashboard">My Journey</Link>
               </Button>
             </>
           ) : (

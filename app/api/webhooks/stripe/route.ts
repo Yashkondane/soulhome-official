@@ -52,11 +52,8 @@ export async function POST(request: Request) {
         const toISO = (timestamp: number | null | undefined, context: string) => {
           if (!timestamp) {
             console.warn(`[Stripe Webhook] Missing timestamp for ${context} in subscription ${subscription.id}`)
-            // If it's undefined, try to find it in other casing or return a safe default (Start=Now, End=Now+30d?)
-            // But usually this means the property access failed.
-            // Let's log keys to be sure.
-            // console.log('Subscription Keys:', Object.keys(subscription))
-            return new Date().toISOString()
+            // Default to 30 days from now if missing
+            return new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString()
           }
           return new Date(timestamp * 1000).toISOString()
         }

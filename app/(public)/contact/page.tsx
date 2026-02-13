@@ -14,14 +14,8 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email",
-    description: "hello@soulhome.com",
+    description: "soulhome.krisha@gmail.com",
     detail: "We'll respond within 24-48 hours"
-  },
-  {
-    icon: MessageSquare,
-    title: "Support",
-    description: "For membership enquiries",
-    detail: "support@kundaliniawakening.com"
   },
   {
     icon: Clock,

@@ -65,8 +65,8 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/hero-meditation.jpg"
-            alt="Meditation at sunset"
+            src="/HOMEPAGE (4).jpg"
+            alt="Soulhome Homepage"
             fill
             className="object-cover"
             priority
