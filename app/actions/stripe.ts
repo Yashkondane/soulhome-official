@@ -152,15 +152,13 @@ export async function cancelSubscription() {
     throw new Error("No active subscription found")
   }
 
-  // Cancel at period end (user keeps access until billing period ends)
-  await stripe.subscriptions.update(subscription.stripe_subscription_id, {
-    cancel_at_period_end: true,
-  })
+  // Cancel immediately in Stripe (not at period end)
+  await stripe.subscriptions.cancel(subscription.stripe_subscription_id)
 
-  // Update in Supabase so UI reflects immediately
+  // Immediately revoke access in Supabase
   await supabase
     .from('subscriptions')
-    .update({ cancel_at_period_end: true })
+    .update({ status: 'canceled', cancel_at_period_end: false })
     .eq('id', subscription.id)
 
   return { success: true }

@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { User, CreditCard, Mail, Calendar, ExternalLink } from "lucide-react"
+import { User, CreditCard, Mail, ExternalLink } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 import { CancelSubscriptionDialog } from "./cancel-subscription-dialog"
 
@@ -35,8 +35,11 @@ export default async function SettingsPage() {
     .eq('status', 'active')
     .single()
 
-  // Derive a display username: full name, or email prefix
   const username = profile?.full_name || user.email?.split('@')[0] || 'your name'
+
+  const periodEndStr = subscription?.current_period_end
+    ? new Date(subscription.current_period_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })
+    : ''
 
   return (
     <div className="space-y-8">
@@ -89,28 +92,27 @@ export default async function SettingsPage() {
                   </Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Current Period</span>
+                  <span className="text-sm text-muted-foreground">Subscribed On</span>
                   <span className="text-sm text-foreground">
-                    {new Date(subscription.current_period_start).toLocaleDateString()} - {new Date(subscription.current_period_end).toLocaleDateString()}
+                    {new Date(subscription.created_at).toLocaleDateString()}
                   </span>
                 </div>
-                {subscription.cancel_at_period_end && (
-                  <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                    Your subscription will end on {new Date(subscription.current_period_end).toLocaleDateString()}
-                  </div>
-                )}
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">Renews On</span>
+                  <span className="text-sm text-foreground font-medium">
+                    {new Date(subscription.current_period_end).toLocaleDateString()}
+                  </span>
+                </div>
                 <Button variant="outline" className="w-full bg-transparent" asChild>
                   <Link href="/dashboard/settings/billing">
                     Manage Billing
                     <ExternalLink className="ml-2 h-4 w-4" />
                   </Link>
                 </Button>
-                {!subscription.cancel_at_period_end && (
-                  <CancelSubscriptionDialog
-                    username={username}
-                    periodEnd={new Date(subscription.current_period_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
-                  />
-                )}
+                <CancelSubscriptionDialog
+                  username={username}
+                  periodEnd={periodEndStr}
+                />
               </>
             ) : (
               <>
