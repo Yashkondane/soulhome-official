@@ -132,3 +132,36 @@ export async function createBillingPortalSession() {
 
   return { url: session.url }
 }
+
+export async function cancelSubscription() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  if (!user) {
+    throw new Error("Not authenticated")
+  }
+
+  const { data: subscription } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .single()
+
+  if (!subscription?.stripe_subscription_id) {
+    throw new Error("No active subscription found")
+  }
+
+  // Cancel at period end (user keeps access until billing period ends)
+  await stripe.subscriptions.update(subscription.stripe_subscription_id, {
+    cancel_at_period_end: true,
+  })
+
+  // Update in Supabase so UI reflects immediately
+  await supabase
+    .from('subscriptions')
+    .update({ cancel_at_period_end: true })
+    .eq('id', subscription.id)
+
+  return { success: true }
+}

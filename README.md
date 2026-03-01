@@ -16,8 +16,9 @@ A comprehensive membership-based web application built with **Next.js 16**, **Su
 -   **Animations:** [Framer Motion](https://www.framer.com/motion/)
 -   **Forms:** React Hook Form + Zod validation
 
-### Backend & Database
--   **BaaS:** [Supabase](https://supabase.com/) (Auth, Database, Storage)
+### Backend & Services
+-   **Backend Services:** [Supabase](https://supabase.com/) (Auth, Database, Storage)
+-   **File Storage:** [Google Drive API](https://developers.google.com/drive) (Secure hosting for large resources)
 -   **Database:** PostgreSQL
 -   **Payments:** [Stripe](https://stripe.com/)
 
@@ -25,7 +26,7 @@ A comprehensive membership-based web application built with **Next.js 16**, **Su
 
 -   **Secure Authentication:** User sign-up, login, and protected routes using Supabase Auth.
 -   **Subscription Management:** Integration with Stripe for monthly/yearly memberships.
--   **Resource Downloads:** Exclusive content for members with download limits per billing cycle.
+-   **Secure Resource Hub:** Exclusive content library with seamless Google Drive integration for viewing PDFs, videos, and audio.
 -   **Event Management:** Browse, book, and manage events. Admin tools for creating and editing events with image uploads.
 -   **Admin Dashboard:** Comprehensive control panel for managing users, subscriptions, and events.
 -   **Responsive Design:** Fully optimized for mobile, tablet, and desktop devices.
@@ -64,6 +65,8 @@ A comprehensive membership-based web application built with **Next.js 16**, **Su
     SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
     stripe_secret_key=your_stripe_secret_key
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+    GOOGLE_SERVICE_CLIENT_EMAIL=your_google_service_client_email
+    GOOGLE_SERVICE_PRIVATE_KEY=your_google_service_private_key
     ```
 
 4.  **Database Setup:**
