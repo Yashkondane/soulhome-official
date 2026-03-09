@@ -89,9 +89,13 @@ export default function HomePage() {
 
             <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-xl">
+                <Link href="https://calendly.com/soulhome-krisha" target="_blank" rel="noopener noreferrer">
+                  Book a Session
+                </Link>
+              </Button>
+              <Button size="lg" asChild className="text-lg px-8 py-6 bg-primary/80 backdrop-blur-sm text-white border border-primary/50 hover:bg-primary shadow-xl">
                 <Link href="/membership">
-                  Book Session Here
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  Kundalini School
                 </Link>
               </Button>
               <Button variant="outline" size="lg" asChild className="text-lg px-8 py-6 bg-white/10 backdrop-blur-sm text-white border-white/50 hover:bg-white/20 shadow-xl">
@@ -147,42 +151,57 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Benefits Section */}
-      <section className="bg-primary/15 py-20 sm:py-28">
+      {/* Ways to Connect Section */}
+      <section className="bg-primary/5 py-20 sm:py-28">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-12 lg:grid-cols-2">
-            <div>
-              <h2 className="font-serif text-3xl font-bold text-primary sm:text-4xl text-balance uppercase tracking-widest mb-6">
-                Everything You Need for Spiritual Growth
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-                Our membership provides you with all the tools and teachings to support your unique journey of awakening.
-              </p>
-              <ul className="space-y-4 mb-10">
-                {benefits.map((benefit, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-primary" />
-                    <span className="text-foreground">{benefit}</span>
-                  </li>
-                ))}
-              </ul>
-              <Button size="lg" asChild>
-                <Link href="/membership">
-                  View Membership Options
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-            </div>
-            <div className="relative">
-              {/* Circular Image Cutout */}
-              <div className="relative aspect-square w-full max-w-[500px] mx-auto rounded-full overflow-hidden border-[8px] border-primary/50 shadow-2xl">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-3xl font-bold text-primary sm:text-4xl text-balance uppercase tracking-widest">
+              Ways to Connect with Soulhome
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-16 md:gap-8 max-w-5xl mx-auto">
+            {/* 1:1 Live Sessions */}
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <Image
-                  src="/benefits-soulhome.png"
-                  alt="Spiritual Growth"
+                  src="/live session.jpg"
+                  alt="1:1 Live Sessions"
                   fill
-                  className="object-cover object-center"
-                  quality={95}
+                  className="object-cover"
                 />
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-serif text-2xl italic text-primary">1:1 Live Sessions</h3>
+                <div className="w-full h-[1px] bg-primary/20"></div>
+                <p className="text-muted-foreground leading-relaxed text-balance text-sm max-w-sm mx-auto">
+                  Live video call sessions that only open seasonally. These sessions are curated with love for true healing and transformation, and are based on the energetic current of Earth.
+                </p>
+                <Link href="/services" className="inline-block font-serif text-lg italic text-primary hover:text-primary/80 transition-colors">
+                  More info
+                </Link>
+              </div>
+            </div>
+
+            {/* Self-Healing Portal */}
+            <div className="flex flex-col items-center text-center space-y-6">
+              <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
+                <Image
+                  src="/school.jpg"
+                  alt="Self-Healing Portal"
+                  fill
+                  className="object-cover"
+                />
+              </div>
+              <div className="space-y-4">
+                <h3 className="font-serif text-2xl italic text-primary">Self-Healing Portal</h3>
+                <div className="w-full h-[1px] bg-primary/20"></div>
+                <p className="text-muted-foreground leading-relaxed text-balance text-sm max-w-sm mx-auto">
+                  Kundalini School: An online platform on this website, that allows you to access healing resources to enhance your life and spiritual journey. If you resonate with my instagram content, this is a level up, and a deeper connection to your soul.
+                </p>
+                <Link href="/membership" className="inline-block font-serif text-lg italic text-primary hover:text-primary/80 transition-colors">
+                  More info
+                </Link>
               </div>
             </div>
           </div>

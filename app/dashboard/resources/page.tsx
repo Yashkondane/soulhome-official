@@ -6,9 +6,13 @@ import Link from "next/link"
 import { BookOpen, Headphones, Play, FileText, Clock, ArrowRight } from "lucide-react"
 import { ResourceFilters } from "./resource-filters"
 
+import { createClient as createSupabaseClient } from "@supabase/supabase-js"
+
 interface ResourcesPageProps {
   searchParams: Promise<{ type?: string; category?: string; search?: string }>
 }
+
+export const dynamic = 'force-dynamic'
 
 export default async function ResourcesPage({ searchParams }: ResourcesPageProps) {
   const params = await searchParams
@@ -35,11 +39,18 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
 
   const { data: resources } = await query
 
-  // Get categories for filter
-  const { data: categories } = await supabase
+  // Get categories for filter using admin client to bypass RLS
+  const supabaseAdmin = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  )
+
+  const { data: categories } = await supabaseAdmin
     .from('categories')
     .select('*')
     .order('sort_order', { ascending: true })
+
+  const selectedCategory = params.category ? categories?.find(c => c.id === params.category) : null
 
   const typeIcons = {
     pdf: FileText,
@@ -75,6 +86,18 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
         currentCategory={params.category}
         currentSearch={params.search}
       />
+
+      {/* Category Description */}
+      {selectedCategory && selectedCategory.description && (
+        <Card className="border-border/50 bg-primary/5">
+          <CardHeader className="py-4">
+            <CardTitle className="font-serif text-xl">{selectedCategory.name}</CardTitle>
+            <CardDescription className="text-foreground/80 mt-1">
+              {selectedCategory.description}
+            </CardDescription>
+          </CardHeader>
+        </Card>
+      )}
 
       {/* Resources Grid */}
       {resources && resources.length > 0 ? (

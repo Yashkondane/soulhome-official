@@ -7,7 +7,9 @@ import { useState, useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Search, X } from "lucide-react"
+import { Search, X, Check, ChevronsUpDown, Filter } from "lucide-react"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import type { Category } from "@/lib/types"
 
 interface ResourceFiltersProps {
@@ -27,6 +29,7 @@ export function ResourceFilters({
   const searchParams = useSearchParams()
   const [isPending, startTransition] = useTransition()
   const [search, setSearch] = useState(currentSearch || "")
+  const [openCategory, setOpenCategory] = useState(false)
 
   function updateFilters(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString())
@@ -99,27 +102,68 @@ export function ResourceFilters({
         </div>
       </div>
 
-      {/* Category Pills */}
       <div className="flex flex-wrap items-center gap-2 pb-2">
-        <Button
-          variant={!currentCategory || currentCategory === 'all' ? "default" : "outline"}
-          size="sm"
-          onClick={() => updateFilters('category', 'all')}
-          className="rounded-full"
-        >
-          All Categories
-        </Button>
-        {categories.map((category) => (
-          <Button
-            key={category.id}
-            variant={currentCategory === category.id ? "default" : "outline"}
-            size="sm"
-            onClick={() => updateFilters('category', category.id)}
-            className="rounded-full"
-          >
-            {category.name}
-          </Button>
-        ))}
+        <Popover open={openCategory} onOpenChange={setOpenCategory}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={openCategory}
+              className="w-[200px] sm:w-[250px] justify-between font-normal"
+            >
+              <div className="flex items-center gap-2 truncate">
+                <Filter className="h-4 w-4 shrink-0 opacity-50" />
+                <span className="truncate">
+                  {currentCategory && currentCategory !== 'all'
+                    ? categories.find((c) => c.id === currentCategory)?.name || "All Categories"
+                    : "All Categories"}
+                </span>
+              </div>
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-[200px] sm:w-[250px] p-0 z-[100]" align="start">
+            <div className="bg-red-500 text-white p-2 text-xs">Debug Count: {categories?.length}</div>
+            <Command>
+              <CommandInput placeholder="Search category..." />
+              <CommandList>
+                <CommandEmpty>No category found.</CommandEmpty>
+                <CommandGroup>
+                  <CommandItem
+                    value="all"
+                    onSelect={() => {
+                      updateFilters('category', 'all')
+                      setOpenCategory(false)
+                    }}
+                  >
+                    <Check
+                      className={`mr-2 h-4 w-4 ${(!currentCategory || currentCategory === 'all') ? "opacity-100" : "opacity-0"
+                        }`}
+                    />
+                    All Categories
+                  </CommandItem>
+                  {categories && categories.length > 0 ? categories.map((category) => (
+                    <CommandItem
+                      key={category.id}
+                      value={category.name}
+                      keywords={[category.name]}
+                      onSelect={() => {
+                        updateFilters('category', category.id)
+                        setOpenCategory(false)
+                      }}
+                    >
+                      <Check
+                        className={`mr-2 h-4 w-4 ${currentCategory === category.id ? "opacity-100" : "opacity-0"
+                          }`}
+                      />
+                      {category.name}
+                    </CommandItem>
+                  )) : null}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </PopoverContent>
+        </Popover>
       </div>
     </div>
   )
