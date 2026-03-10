@@ -45,12 +45,16 @@ export default async function ResourcesPage({ searchParams }: ResourcesPageProps
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
 
-  const { data: categories } = await supabaseAdmin
+  const { data: categories, error: catError } = await supabaseAdmin
     .from('categories')
     .select('*')
-    .order('sort_order', { ascending: true })
+    .order('name', { ascending: true })
 
-  const selectedCategory = params.category ? categories?.find(c => c.id === params.category) : null
+  if (catError) {
+    console.error('Error fetching categories:', catError)
+  }
+
+  const selectedCategory = params.category ? categories?.find((c: any) => c.id === params.category) : null
 
   const typeIcons = {
     pdf: FileText,

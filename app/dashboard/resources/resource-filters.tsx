@@ -123,7 +123,6 @@ export function ResourceFilters({
             </Button>
           </PopoverTrigger>
           <PopoverContent className="w-[200px] sm:w-[250px] p-0 z-[100]" align="start">
-            <div className="bg-red-500 text-white p-2 text-xs">Debug Count: {categories?.length}</div>
             <Command>
               <CommandInput placeholder="Search category..." />
               <CommandList>
