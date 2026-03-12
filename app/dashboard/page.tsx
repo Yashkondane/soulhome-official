@@ -98,16 +98,22 @@ export default async function DashboardPage() {
 
       {/* Download Counter Banner */}
       {subscription && (() => {
+        const ratio = downloadsUsed / downloadsLimit
         const isMaxed = downloadsLeft === 0
-        const isLow = downloadsLeft === 1
-        const bgClass = isMaxed ? 'bg-red-50 border-red-200' : isLow ? 'bg-amber-50 border-amber-200' : 'bg-primary/5 border-primary/20'
-        const iconClass = isMaxed ? 'text-red-500' : isLow ? 'text-amber-500' : 'text-primary'
-        const barClass = isMaxed ? 'bg-red-400' : isLow ? 'bg-amber-400' : 'bg-primary'
-        const textClass = isMaxed ? 'text-red-700' : isLow ? 'text-amber-700' : 'text-primary'
-        const barWidth = Math.min(100, (downloadsUsed / downloadsLimit) * 100)
+        const bgClass = ratio >= 1
+          ? 'bg-purple-900/15 border-purple-400'
+          : ratio >= 0.67
+          ? 'bg-purple-700/12 border-purple-300'
+          : ratio >= 0.34
+          ? 'bg-purple-500/10 border-purple-200'
+          : 'bg-purple-100/60 border-purple-100'
+        const iconClass = ratio >= 1 ? 'text-purple-900' : ratio >= 0.67 ? 'text-purple-700' : ratio >= 0.34 ? 'text-purple-600' : 'text-purple-400'
+        const barClass = ratio >= 1 ? 'bg-purple-800' : ratio >= 0.67 ? 'bg-purple-600' : ratio >= 0.34 ? 'bg-purple-500' : 'bg-purple-400'
+        const textClass = ratio >= 1 ? 'text-purple-900' : ratio >= 0.67 ? 'text-purple-800' : ratio >= 0.34 ? 'text-purple-700' : 'text-purple-600'
+        const barWidth = Math.min(100, ratio * 100)
         const message = isMaxed
           ? "You've reached your download limit for this month"
-          : isLow
+          : downloadsLeft === 1
           ? '1 download remaining this month'
           : `${downloadsLeft} downloads remaining this month`
         return (
@@ -118,16 +124,16 @@ export default async function DashboardPage() {
             <div className="flex-1 min-w-0">
               <div className="flex items-baseline justify-between gap-4 flex-wrap">
                 <p className={`font-semibold text-sm ${textClass}`}>{message}</p>
-                <p className="text-xs text-muted-foreground shrink-0">
+                <p className="text-xs text-purple-500 shrink-0">
                   {downloadsUsed} / {downloadsLimit} used
                   {renewalDate ? ` · Resets ${renewalDate}` : ''}
                 </p>
               </div>
-              <div className="mt-2.5 h-2 rounded-full bg-black/8 overflow-hidden">
+              <div className="mt-2.5 h-2 rounded-full bg-purple-100 overflow-hidden">
                 <div className={`h-full rounded-full transition-all duration-500 ${barClass}`} style={{ width: `${barWidth}%` }} />
               </div>
               {isMaxed && renewalDate && (
-                <p className="mt-1.5 text-xs text-red-600">Your downloads will reset on {renewalDate}.</p>
+                <p className="mt-1.5 text-xs text-purple-700">Your downloads will reset on {renewalDate}.</p>
               )}
             </div>
           </div>

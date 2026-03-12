@@ -33,81 +33,44 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
     redirect("/dashboard")
   }
 
-  // Create or update subscription record
-  if (session.subscription && typeof session.subscription !== 'string') {
-    const subscription = session.subscription
+  // Wait for the webhook to create the subscription record.
+  // The webhook handles subscription creation — we just poll to confirm it arrived.
+  if (session.subscription) {
+    const subscriptionId = typeof session.subscription === 'string'
+      ? session.subscription
+      : session.subscription.id
 
-    try {
-      // Create a Service Role client to bypass RLS for subscription insertion
-      const supabaseAdmin = createSupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
-      )
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    )
 
-      // Check if subscription already exists
-      const { data: existingSub, error: fetchError } = await supabaseAdmin
+    // Poll up to 5 times (10 seconds total) for the webhook to create the subscription
+    let subscriptionFound = false
+    for (let i = 0; i < 5; i++) {
+      const { data: sub } = await supabaseAdmin
         .from('subscriptions')
-        .select('*')
-        .eq('stripe_subscription_id', subscription.id)
+        .select('id')
+        .eq('stripe_subscription_id', subscriptionId)
         .single()
 
-      if (fetchError && fetchError.code !== 'PGRST116') {
-        console.error("Error fetching subscription:", fetchError)
+      if (sub) {
+        subscriptionFound = true
+        break
       }
 
-      // Determine start and end times with robust safety checks
-      const nowSeconds = Math.floor(Date.now() / 1000)
-      let startInput = (subscription as any).current_period_start
-      let endInput = (subscription as any).current_period_end
+      // Wait 2 seconds before retrying
+      await new Promise(resolve => setTimeout(resolve, 2000))
+    }
 
-      // Fallback if missing
-      if (!startInput) startInput = nowSeconds
-      if (!endInput) endInput = startInput + 30 * 24 * 60 * 60
-
-      // Safety check: ensure end is after start. If they are equal or end is before, add 30 days.
-      if (endInput <= startInput) {
-        console.warn("Detected end date <= start date, adjusting by 30 days")
-        endInput = startInput + 30 * 24 * 60 * 60
-      }
-
-      const current_period_start = new Date(startInput * 1000).toISOString()
-      const current_period_end = new Date(endInput * 1000).toISOString()
-
-      if (existingSub) {
-        // Update existing subscription
-        const { error: updateError } = await supabaseAdmin.from('subscriptions').update({
-          status: 'active', // Force active since we are in success page
-          current_period_start,
-          current_period_end,
-          cancel_at_period_end: subscription.cancel_at_period_end,
-        }).eq('id', existingSub.id)
-
-        if (updateError) console.error("Error updating subscription:", updateError)
-
-      } else {
-        // Insert new subscription
-        const { error: insertError } = await supabaseAdmin.from('subscriptions').insert({
-          user_id: user.id,
-          stripe_customer_id: typeof session.customer === 'string' ? session.customer : session.customer?.id,
-          stripe_subscription_id: subscription.id,
-          status: 'active', // Force active
-          plan_id: session.metadata?.product_id || 'monthly-membership',
-          used_downloads: 0,
-          current_period_start,
-          current_period_end,
-          cancel_at_period_end: subscription.cancel_at_period_end,
-        })
-
-        if (insertError) console.error("Error inserting subscription:", insertError)
-      }
-    } catch (err) {
-      console.error("CRITICAL: Failed to process subscription in success page:", err)
+    if (!subscriptionFound) {
+      console.warn(`Webhook may not have fired yet for subscription ${subscriptionId}. User may need to refresh.`)
     }
   }
 
   const features = [
     { icon: Library, text: "Full access to our resource library" },
-    { icon: Download, text: "Unlimited downloads" },
+    { icon: Download, text: "3 resource downloads per month" },
     { icon: Heart, text: "New content added weekly" },
   ]
 

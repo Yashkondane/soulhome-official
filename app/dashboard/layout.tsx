@@ -4,7 +4,7 @@ import Link from "next/link"
 import { createClient } from "@/lib/server"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { LayoutDashboard, Library, Download, Settings, LogOut, Shield } from "lucide-react"
+import { LayoutDashboard, Library, Download, Settings, LogOut, Shield, AlertTriangle } from "lucide-react"
 import { signOut } from "@/app/actions/auth"
 import Image from "next/image"
 
@@ -31,6 +31,14 @@ export default async function DashboardLayout({
     .select('*')
     .eq('user_id', user.id)
     .eq('status', 'active')
+    .single()
+
+  // Also check for past_due subscriptions
+  const { data: pastDueSub } = await supabase
+    .from('subscriptions')
+    .select('*')
+    .eq('user_id', user.id)
+    .eq('status', 'past_due')
     .single()
 
   const navLinks = [
@@ -79,6 +87,19 @@ export default async function DashboardLayout({
                         <p className="mt-2 text-xs text-muted-foreground">
                           Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
                         </p>
+                      </div>
+                    ) : pastDueSub ? (
+                      <div className="mt-2">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+                          <AlertTriangle className="h-3 w-3" />
+                          Payment Failed
+                        </span>
+                        <p className="mt-2 text-xs text-red-600">
+                          Your last payment failed. Please update your payment method.
+                        </p>
+                        <Button size="sm" variant="destructive" className="mt-2 w-full" asChild>
+                          <Link href="/dashboard/settings">Update Payment</Link>
+                        </Button>
                       </div>
                     ) : (
                       <div className="mt-2">
@@ -156,6 +177,19 @@ export default async function DashboardLayout({
                 <p className="mt-2 text-xs text-muted-foreground">
                   Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
                 </p>
+              </div>
+            ) : pastDueSub ? (
+              <div className="mt-2">
+                <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
+                  <AlertTriangle className="h-3 w-3" />
+                  Payment Failed
+                </span>
+                <p className="mt-2 text-xs text-red-600">
+                  Your last payment failed. Please update your payment method.
+                </p>
+                <Button size="sm" variant="destructive" className="mt-2 w-full" asChild>
+                  <Link href="/dashboard/settings">Update Payment</Link>
+                </Button>
               </div>
             ) : (
               <div className="mt-2">

@@ -196,6 +196,7 @@ export async function POST(request: Request) {
               status: subscription.status,
               current_period_start: new Date((subscription as any).current_period_start * 1000).toISOString(),
               current_period_end: new Date((subscription as any).current_period_end * 1000).toISOString(),
+              downloads_used: 0, // Reset download counter for the new billing period
             })
             .eq('stripe_subscription_id', subscription.id)
         }

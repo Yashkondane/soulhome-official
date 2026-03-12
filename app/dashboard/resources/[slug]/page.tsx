@@ -30,10 +30,14 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
   // Check subscription status
   const { data: subscription } = await supabase
     .from('subscriptions')
-    .select('*')
+    .select('*, downloads_used, downloads_limit')
     .eq('user_id', user.id)
     .eq('status', 'active')
     .single()
+
+  const downloadsUsed = subscription?.downloads_used ?? 0
+  const downloadsLimit = subscription?.downloads_limit ?? 3
+  const downloadsLeft = Math.max(0, downloadsLimit - downloadsUsed)
 
   // Get resource
   const { data: resource } = await supabase
@@ -276,6 +280,51 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Download Counter */}
+          {subscription && (() => {
+            // Purple shades that intensify: 0 used = lightest, 3 used = darkest
+            const ratio = downloadsUsed / downloadsLimit
+            const bgShade = ratio >= 1
+              ? 'bg-purple-900/15 border-purple-400'
+              : ratio >= 0.67
+              ? 'bg-purple-700/12 border-purple-300'
+              : ratio >= 0.34
+              ? 'bg-purple-500/10 border-purple-200'
+              : 'bg-purple-100/60 border-purple-100'
+            const textShade = ratio >= 1
+              ? 'text-purple-900'
+              : ratio >= 0.67
+              ? 'text-purple-800'
+              : ratio >= 0.34
+              ? 'text-purple-700'
+              : 'text-purple-600'
+            const barShade = ratio >= 1
+              ? 'bg-purple-800'
+              : ratio >= 0.67
+              ? 'bg-purple-600'
+              : ratio >= 0.34
+              ? 'bg-purple-500'
+              : 'bg-purple-400'
+            const message = downloadsLeft === 0
+              ? 'Download limit reached'
+              : downloadsLeft === 1
+              ? '1 download left this month'
+              : `${downloadsLeft} downloads left this month`
+            return (
+              <div className={`rounded-xl border p-4 ${bgShade}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <p className={`text-sm font-semibold ${textShade}`}>{message}</p>
+                </div>
+                <div className="h-2 rounded-full bg-purple-100 overflow-hidden">
+                  <div
+                    className={`h-full rounded-full transition-all duration-500 ${barShade}`}
+                    style={{ width: `${Math.min(100, ratio * 100)}%` }}
+                  />
+                </div>
+                <p className="mt-1.5 text-xs text-purple-500">{downloadsUsed} / {downloadsLimit} used</p>
+              </div>
+            )
+          })()}
           {/* Download Card */}
           <Card className="border-border/50">
             <CardHeader>
