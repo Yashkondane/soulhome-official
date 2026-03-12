@@ -83,5 +83,6 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
     }
 
     revalidatePath(`/dashboard/resources/${resourceSlug}`)
+    revalidatePath('/dashboard')
     return { success: true, url: resourceUrl }
 }

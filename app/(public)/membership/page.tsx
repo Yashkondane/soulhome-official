@@ -68,10 +68,10 @@ export default function MembershipPage() {
               Membership
             </div>
             <h1 className="font-serif text-4xl font-bold tracking-tight text-foreground sm:text-5xl text-balance">
-              Invest in Your Spiritual Growth
+              Kundalini School
             </h1>
             <p className="mt-6 text-lg text-muted-foreground leading-relaxed text-balance">
-              Choose the plan that works best for your journey. Full access to our entire library with either option.
+              Learn to unlock your power in a slow, regulated, serotonin-filled environment.
             </p>
           </div>
         </div>

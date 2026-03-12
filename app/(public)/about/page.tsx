@@ -29,7 +29,7 @@ export default function AboutPage() {
             {/* Image Side */}
             <div className="relative aspect-[4/5] lg:aspect-square w-full max-w-md mx-auto lg:max-w-none rounded-2xl overflow-hidden shadow-2xl animate-in slide-in-from-right duration-700">
               <Image
-                src="/about-soulhome.png"
+                src="/IMG_20210814_173621~2.jpg"
                 alt="Krisha"
                 fill
                 className="object-cover"

@@ -1,9 +1,9 @@
 "use client"
 
-import React from "react"
+import React, { useState } from "react"
 
 import { useRouter, useSearchParams } from "next/navigation"
-import { useState, useTransition } from "react"
+import { useTransition } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -19,6 +19,55 @@ interface ResourceFiltersProps {
   currentSearch?: string
 }
 
+// Centered overlay that shows on hover
+function CategoryDescriptionOverlay({ name, description }: { name: string; description: string }) {
+  return (
+    <div className="fixed inset-0 z-[200] flex items-center justify-center pointer-events-none">
+      <div
+        className="animate-in fade-in-0 zoom-in-95 duration-200"
+        style={{
+          background: 'rgba(255, 255, 255, 0.75)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          border: '1px solid rgba(139, 92, 246, 0.18)',
+          borderRadius: '20px',
+          boxShadow: '0 20px 60px rgba(0,0,0,0.12)',
+          padding: '28px 36px',
+          maxWidth: '400px',
+          width: 'auto',
+          textAlign: 'center',
+        }}
+      >
+        <p style={{
+          fontFamily: 'Georgia, serif',
+          fontSize: '15px',
+          fontWeight: 700,
+          color: 'hsl(var(--primary))',
+          marginBottom: '12px',
+          letterSpacing: '0.03em',
+          textTransform: 'uppercase',
+        }}>
+          {name}
+        </p>
+        <div style={{
+          width: '40px',
+          height: '1px',
+          background: 'hsl(var(--primary) / 0.3)',
+          margin: '0 auto 14px',
+        }} />
+        <p style={{
+          fontSize: '13px',
+          lineHeight: '1.75',
+          color: 'hsl(var(--foreground) / 0.8)',
+          fontWeight: 400,
+        }}>
+          {description}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 export function ResourceFilters({
   categories,
   currentType,
@@ -30,6 +79,7 @@ export function ResourceFilters({
   const [isPending, startTransition] = useTransition()
   const [search, setSearch] = useState(currentSearch || "")
   const [openCategory, setOpenCategory] = useState(false)
+  const [hoveredCategory, setHoveredCategory] = useState<Category | null>(null)
 
   function updateFilters(key: string, value: string | null) {
     const params = new URLSearchParams(searchParams.toString())
@@ -61,6 +111,14 @@ export function ResourceFilters({
 
   return (
     <div className="space-y-4">
+      {/* Centered description overlay on hover */}
+      {hoveredCategory && hoveredCategory.description && (
+        <CategoryDescriptionOverlay
+          name={hoveredCategory.name}
+          description={hoveredCategory.description}
+        />
+      )}
+
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <form onSubmit={handleSearch} className="flex gap-2 sm:max-w-sm sm:flex-1">
           <div className="relative flex-1">
@@ -134,10 +192,10 @@ export function ResourceFilters({
                       updateFilters('category', 'all')
                       setOpenCategory(false)
                     }}
+                    onMouseEnter={() => setHoveredCategory(null)}
                   >
                     <Check
-                      className={`mr-2 h-4 w-4 ${(!currentCategory || currentCategory === 'all') ? "opacity-100" : "opacity-0"
-                        }`}
+                      className={`mr-2 h-4 w-4 ${(!currentCategory || currentCategory === 'all') ? "opacity-100" : "opacity-0"}`}
                     />
                     All Categories
                   </CommandItem>
@@ -149,11 +207,13 @@ export function ResourceFilters({
                       onSelect={() => {
                         updateFilters('category', category.id)
                         setOpenCategory(false)
+                        setHoveredCategory(null)
                       }}
+                      onMouseEnter={() => setHoveredCategory(category)}
+                      onMouseLeave={() => setHoveredCategory(null)}
                     >
                       <Check
-                        className={`mr-2 h-4 w-4 ${currentCategory === category.id ? "opacity-100" : "opacity-0"
-                          }`}
+                        className={`mr-2 h-4 w-4 ${currentCategory === category.id ? "opacity-100" : "opacity-0"}`}
                       />
                       {category.name}
                     </CommandItem>

@@ -114,12 +114,12 @@ export default function HomePage() {
             {/* Circular Image Cutout */}
             <div className="relative aspect-square w-full max-w-[500px] mx-auto rounded-full overflow-hidden border-[8px] border-primary/50 shadow-2xl">
               <Image
-                src="/about-soulhome.png"
-                alt="Soulhome spirit"
-                fill
-                className="object-cover object-center"
-                quality={95}
-              />
+                  src="/IMG_20210814_173621~2.jpg"
+                  alt="Soulhome spirit"
+                  fill
+                  className="object-cover object-center"
+                  quality={95}
+                />
             </div>
 
             {/* Text Content */}

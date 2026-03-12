@@ -2,7 +2,7 @@ import { createClient } from "@/lib/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { BookOpen, Headphones, Play, Download, ArrowRight, Clock, FileText } from "lucide-react"
+import { BookOpen, Headphones, Play, Download, ArrowRight, Clock, FileText, AlertCircle } from "lucide-react"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -17,6 +17,21 @@ export default async function DashboardPage() {
   if (!user) {
     return null
   }
+
+  // Get user's active subscription for download counter
+  const { data: subscription } = await supabase
+    .from('subscriptions')
+    .select('downloads_used, downloads_limit, current_period_end')
+    .eq('user_id', user.id)
+    .eq('status', 'active')
+    .single()
+
+  const downloadsUsed = subscription?.downloads_used ?? 0
+  const downloadsLimit = subscription?.downloads_limit ?? 3
+  const downloadsLeft = Math.max(0, downloadsLimit - downloadsUsed)
+  const renewalDate = subscription?.current_period_end
+    ? new Date(subscription.current_period_end).toLocaleDateString('en-GB', { day: 'numeric', month: 'long' })
+    : null
 
   // Get user's download count
   const { count: downloadCount } = await supabase
@@ -80,6 +95,44 @@ export default async function DashboardPage() {
           Continue your spiritual journey with our latest resources.
         </p>
       </div>
+
+      {/* Download Counter Banner */}
+      {subscription && (() => {
+        const isMaxed = downloadsLeft === 0
+        const isLow = downloadsLeft === 1
+        const bgClass = isMaxed ? 'bg-red-50 border-red-200' : isLow ? 'bg-amber-50 border-amber-200' : 'bg-primary/5 border-primary/20'
+        const iconClass = isMaxed ? 'text-red-500' : isLow ? 'text-amber-500' : 'text-primary'
+        const barClass = isMaxed ? 'bg-red-400' : isLow ? 'bg-amber-400' : 'bg-primary'
+        const textClass = isMaxed ? 'text-red-700' : isLow ? 'text-amber-700' : 'text-primary'
+        const barWidth = Math.min(100, (downloadsUsed / downloadsLimit) * 100)
+        const message = isMaxed
+          ? "You've reached your download limit for this month"
+          : isLow
+          ? '1 download remaining this month'
+          : `${downloadsLeft} downloads remaining this month`
+        return (
+          <div className={`rounded-2xl border p-5 flex items-center gap-5 ${bgClass}`}>
+            <div className={`shrink-0 ${iconClass}`}>
+              <Download className="h-8 w-8" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-baseline justify-between gap-4 flex-wrap">
+                <p className={`font-semibold text-sm ${textClass}`}>{message}</p>
+                <p className="text-xs text-muted-foreground shrink-0">
+                  {downloadsUsed} / {downloadsLimit} used
+                  {renewalDate ? ` · Resets ${renewalDate}` : ''}
+                </p>
+              </div>
+              <div className="mt-2.5 h-2 rounded-full bg-black/8 overflow-hidden">
+                <div className={`h-full rounded-full transition-all duration-500 ${barClass}`} style={{ width: `${barWidth}%` }} />
+              </div>
+              {isMaxed && renewalDate && (
+                <p className="mt-1.5 text-xs text-red-600">Your downloads will reset on {renewalDate}.</p>
+              )}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Stats Grid */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
