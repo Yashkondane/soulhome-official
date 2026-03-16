@@ -13,7 +13,7 @@ export const PRODUCTS: Product[] = [
     id: 'price_1SyfmhReyyxGYZLxa7nSjsqF',
     name: 'Monthly Membership',
     description: 'Full access to all resources, teachings, and community',
-    priceInCents: 5500, // £55.00
+    priceInCents: 7700, // £77.00
     interval: 'month',
     type: 'subscription',
     features: [
