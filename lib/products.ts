@@ -8,9 +8,13 @@ export interface Product {
   type: 'subscription' | 'one_time'
 }
 
+export const STRIPE_PRICES = {
+  MONTHLY_MEMBERSHIP: 'price_1SyfmhReyyxGYZLxa7nSjsqF',
+}
+
 export const PRODUCTS: Product[] = [
   {
-    id: 'price_1SyfmhReyyxGYZLxa7nSjsqF',
+    id: 'monthly-membership',
     name: 'Monthly Membership',
     description: 'Full access to all resources, teachings, and community',
     priceInCents: 7700, // £77.00
