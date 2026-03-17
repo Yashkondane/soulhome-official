@@ -13,7 +13,7 @@ import {
 } from "lucide-react"
 import { DecorativeArch } from "@/components/decorative-arch"
 import { DecorativeCircle } from "@/components/decorative-circle"
-import { TestimonialCarousel } from "@/components/testimonial-carousel"
+import { TestimonialMasonry } from "@/components/testimonial-masonry"
 import Image from "next/image"
 
 
@@ -154,7 +154,7 @@ export default function HomePage() {
 
 
       {/* Testimonials Section */}
-      <section className="py-20 sm:py-28 bg-background">
+      <section id="testimonials" className="py-20 sm:py-28 bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-3xl text-center mb-16">
             <p className="text-primary font-serif font-bold text-sm uppercase tracking-[0.2em] mb-4">
@@ -165,7 +165,7 @@ export default function HomePage() {
             </h2>
           </div>
 
-          <TestimonialCarousel testimonials={testimonials} />
+          <TestimonialMasonry />
         </div>
       </section>
 

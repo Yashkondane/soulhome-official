@@ -5,6 +5,7 @@ const footerLinks = {
   explore: [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/#testimonials", label: "Testimonials" },
     { href: "/membership", label: "Membership" },
     { href: "/contact", label: "Contact" },
   ],

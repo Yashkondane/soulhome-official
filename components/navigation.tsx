@@ -12,6 +12,7 @@ import Image from "next/image"
 const navLinks = [
   { href: "/", label: "Home" },
   { href: "/services", label: "Services" },
+  { href: "/#testimonials", label: "Testimonials" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
   { href: "/terms", label: "T&C" },
@@ -51,7 +52,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
         scrolled ? "h-20" : "h-28"
       )}>
         {/* Mobile Navigation Trigger - Absolute Right */}
-        <div className="absolute right-6 md:hidden z-50">
+        <div className="absolute right-6 lg:hidden z-50">
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className={isDarkText ? "text-primary" : "text-white"}>
@@ -119,7 +120,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
         </div>
 
         {/* Logo - Centered on Mobile using Absolute Positioning, Left on Desktop */}
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 md:static md:translate-x-0 md:translate-y-0 md:flex-1 md:flex md:justify-start">
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 lg:static lg:translate-x-0 lg:translate-y-0 lg:flex-1 lg:flex lg:justify-start">
           <Link href="/" className="flex items-center gap-3">
             <Image
               src="/logo.png"
@@ -131,14 +132,14 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
               )}
             />
             <span className={cn(
-              "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors hidden md:block",
+              "font-serif text-lg uppercase tracking-[0.2em] drop-shadow-lg transition-colors hidden lg:block",
               isDarkText ? "text-primary" : "text-white"
             )}>Soulhome</span>
           </Link>
         </div>
 
         {/* Desktop Navigation */}
-        <div className="hidden items-center gap-8 md:flex">
+        <div className="hidden items-center gap-6 lg:flex">
           {navLinks.map((link) => (
             <Link
               key={link.href}
@@ -154,7 +155,7 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
           ))}
         </div>
 
-        <div className="hidden items-center gap-4 md:flex">
+        <div className="hidden items-center gap-4 lg:flex">
           {isLoggedIn ? (
             <>
               {isAdmin && (
