@@ -122,8 +122,8 @@ export default function MembershipPage() {
                 />
               </div>
               <div className="text-[#885d7b] pt-4 md:pt-8 text-center md:text-left">
-                <p className="mb-6 leading-relaxed text-lg italic text-primary/80">
-                  <span className="font-bold text-primary not-italic">Divine Feminine & Masculine energies</span> are supported through specific modules which help you evolve on your inner work journey, with love and tenderness. The feminine blooms in the safety of the divine masculine{"'"}s presence. Let yourself bloom in self-love.
+                <p className="mb-6 leading-relaxed text-lg">
+                  <span className="font-bold text-primary">Divine Feminine & Masculine energies</span> are supported through specific modules which help you evolve on your inner work journey, with love and tenderness. The feminine blooms in the safety of the divine masculine{"'"}s presence. Let yourself bloom in self-love.
                 </p>
                 <div className="flex gap-4 items-start justify-center md:justify-start">
                   <CheckSquare className="w-6 h-6 mt-0.5 shrink-0 text-primary opacity-80" />
@@ -142,7 +142,7 @@ export default function MembershipPage() {
                   className="object-contain object-top"
                 />
               </div>
-              <div className="text-secondary-foreground pt-4 md:pt-8 text-center md:text-left">
+              <div className="text-[#885d7b] pt-4 md:pt-8 text-center md:text-left">
                 <p className="mb-6 leading-relaxed text-lg">
                   <span className="font-bold text-primary">Twin Flames:</span> Every single healing or transmission will help you unlock union. There are specific modules just for twin flames as well. Although I would not suggest solely focusing on this. Instead, explore the wide range of healings available.
                 </p>
@@ -185,8 +185,8 @@ export default function MembershipPage() {
                 />
               </div>
               <div className="text-[#885d7b] pt-4 md:pt-8 text-center md:text-left">
-                <p className="mb-6 leading-relaxed text-lg italic border-l-2 border-primary/20 pl-6 border-dashed">
-                  <span className="font-bold text-primary not-italic">Choosing serotonin over dopamine-spikes.</span> This space will demand your body to sink into its relaxed state. It is not fast or intimidating like social media. It is a safe, healing space. This will trigger you for the first 3 months, as most of us have already been conditioned to seek dopamine. Sit with it, you will notice a positive development in about 6-7 months.
+                <p className="mb-6 leading-relaxed text-lg">
+                  <span className="font-bold text-primary">Choosing serotonin over dopamine-spikes.</span> This space will demand your body to sink into its relaxed state. It is not fast or intimidating like social media. It is a safe, healing space. This will trigger you for the first 3 months, as most of us have already been conditioned to seek dopamine. Sit with it, you will notice a positive development in about 6-7 months.
                 </p>
                 <div className="flex gap-4 items-start justify-center md:justify-start">
                   <CheckSquare className="w-6 h-6 mt-0.5 shrink-0 text-primary opacity-80" />

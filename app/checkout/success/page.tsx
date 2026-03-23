@@ -69,9 +69,7 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
   }
 
   const features = [
-    { icon: Library, text: "Full access to our resource library" },
     { icon: Download, text: "3 resource downloads per month" },
-    { icon: Heart, text: "New content added weekly" },
   ]
 
   return (
@@ -103,9 +101,6 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
             Thank you for joining us. You now have full access to all our resources.
           </p>
 
-          <div className="bg-muted p-3 rounded-md text-xs text-muted-foreground break-all">
-            Order Reference: {params.session_id}
-          </div>
 
           <div className="rounded-lg bg-secondary/50 p-4 text-left">
             <h3 className="font-semibold text-foreground">What you can do now:</h3>

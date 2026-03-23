@@ -21,11 +21,9 @@ export const PRODUCTS: Product[] = [
     interval: 'month',
     type: 'subscription',
     features: [
-      'Unlimited access to resource library',
       'PDF guides and worksheets',
       'Audio meditations and practices',
       'Video teachings and workshops',
-      'New content added weekly',
       'Cancel anytime'
     ]
   },
