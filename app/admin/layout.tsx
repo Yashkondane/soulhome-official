@@ -3,7 +3,7 @@ import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/server"
 import { Button } from "@/components/ui/button"
-import { LayoutDashboard, Library, Users, FolderOpen, LogOut, ArrowLeft, Home } from "lucide-react"
+import { LayoutDashboard, Library, Users, FolderOpen, LogOut, ArrowLeft, Home, FileText } from "lucide-react"
 import { signOut } from "@/app/actions/auth"
 import Image from "next/image"
 
@@ -39,6 +39,7 @@ export default async function AdminLayout({
 
   const navLinks = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },
+    { href: "/admin/blogs", label: "Blogs", icon: FileText },
     { href: "/admin/resources", label: "Resources", icon: Library },
     { href: "/admin/categories", label: "Categories", icon: FolderOpen },
     { href: "/admin/members", label: "Members", icon: Users },

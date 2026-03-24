@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/server"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Users, Library, Download, CreditCard, TrendingUp, Clock } from "lucide-react"
+import { Users, Library, Download, CreditCard, TrendingUp, Clock, FileText } from "lucide-react"
 
 export default async function AdminPage() {
   const supabase = await createClient()
@@ -39,6 +39,10 @@ export default async function AdminPage() {
     .from('downloads')
     .select('*', { count: 'exact', head: true })
 
+  const { count: totalBlogs } = await supabase
+    .from('blogs')
+    .select('*', { count: 'exact', head: true })
+
   // Get recent activity
   const { data: recentMembers } = await supabase
     .from('profiles')
@@ -55,6 +59,7 @@ export default async function AdminPage() {
   const stats = [
     { label: "Total Members", value: totalMembers || 0, icon: Users, color: "text-blue-600" },
     { label: "Active Subscriptions", value: activeSubscriptions || 0, icon: CreditCard, color: "text-green-600" },
+    { label: "Total Blogs", value: totalBlogs || 0, icon: FileText, color: "text-purple-600" },
     { label: "Total Resources", value: totalResources || 0, icon: Library, color: "text-orange-600" },
     { label: "Total Downloads", value: totalDownloads || 0, icon: Download, color: "text-primary" },
   ]
