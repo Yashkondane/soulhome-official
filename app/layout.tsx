@@ -36,6 +36,7 @@ export const metadata: Metadata = {
 
 import { Preloader } from "@/components/preloader"
 import { Toaster } from "@/components/ui/sonner"
+import { CookieConsent } from "@/components/cookie-consent"
 
 export default function RootLayout({
   children,
@@ -49,6 +50,7 @@ export default function RootLayout({
         <Analytics />
         {children}
         <Toaster />
+        <CookieConsent />
       </body>
     </html>
   )

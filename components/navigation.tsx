@@ -16,7 +16,6 @@ const navLinks = [
   { href: "/blog", label: "Blog" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
-  { href: "/terms", label: "T&C" },
 ]
 
 interface NavigationProps {
@@ -106,11 +105,8 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
                     </>
                   ) : (
                     <>
-                      <Button variant="outline" asChild className="w-full bg-transparent">
-                        <Link href="/auth/login" onClick={() => setOpen(false)}>Sign In</Link>
-                      </Button>
                       <Button asChild className="w-full">
-                        <Link href="/membership" onClick={() => setOpen(false)}>Sign Up</Link>
+                        <Link href="/auth/login" onClick={() => setOpen(false)}>Sign In</Link>
                       </Button>
                     </>
                   )}
@@ -176,16 +172,10 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
             </>
           ) : (
             <>
-              <Button variant="ghost" asChild className={cn(
-                "hover:bg-white/10",
-                isDarkText ? "text-primary hover:text-primary/80 hover:bg-primary/10" : "text-white hover:text-white/80"
-              )}>
-                <Link href="/auth/login">Sign In</Link>
-              </Button>
               <Button asChild className={cn(
                 isDarkText ? "bg-primary text-white hover:bg-primary/90" : "bg-white text-primary hover:bg-white/90"
               )}>
-                <Link href="/membership">Sign Up</Link>
+                <Link href="/auth/login">Sign In</Link>
               </Button>
             </>
           )}
