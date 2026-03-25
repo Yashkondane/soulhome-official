@@ -135,50 +135,51 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
           </Link>
         </div>
 
-        {/* Desktop Navigation */}
-        <div className="hidden items-center gap-6 lg:flex">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={cn(
-                "text-sm font-medium transition-colors hover:text-opacity-80",
-                isDarkText ? "text-primary hover:text-primary/80" : "text-white hover:text-white/80",
-                pathname === link.href && "underline underline-offset-4"
-              )}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
+        {/* Desktop Navigation & Auth */}
+        <div className="hidden lg:flex items-center gap-10">
+          <div className="flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-opacity-80 block",
+                  isDarkText ? "text-primary hover:text-primary/80" : "text-white hover:text-white/80",
+                  pathname === link.href && "underline underline-offset-8"
+                )}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
 
-        <div className="hidden items-center gap-4 lg:flex">
-          {isLoggedIn ? (
-            <>
-              {isAdmin && (
+          <div className="flex items-center gap-4">
+            {isLoggedIn ? (
+              <>
+                {isAdmin && (
+                  <Button variant="ghost" asChild className={cn(
+                    "hover:bg-white/10 rounded-full",
+                    isDarkText ? "text-primary hover:text-primary/80 hover:bg-primary/10" : "text-white hover:text-white/80"
+                  )}>
+                    <Link href="/admin">Admin</Link>
+                  </Button>
+                )}
                 <Button variant="ghost" asChild className={cn(
-                  "hover:bg-white/10",
+                  "hover:bg-white/10 rounded-full",
                   isDarkText ? "text-primary hover:text-primary/80 hover:bg-primary/10" : "text-white hover:text-white/80"
                 )}>
-                  <Link href="/admin">Admin</Link>
+                  <Link href="/dashboard">My Journey</Link>
                 </Button>
-              )}
-              <Button variant="ghost" asChild className={cn(
-                "hover:bg-white/10",
-                isDarkText ? "text-primary hover:text-primary/80 hover:bg-primary/10" : "text-white hover:text-white/80"
-              )}>
-                <Link href="/dashboard">My Journey</Link>
-              </Button>
-            </>
-          ) : (
-            <>
+              </>
+            ) : (
               <Button asChild className={cn(
+                "rounded-full px-8 shadow-sm transition-all active:scale-95 py-2 h-auto",
                 isDarkText ? "bg-primary text-white hover:bg-primary/90" : "bg-white text-primary hover:bg-white/90"
               )}>
                 <Link href="/auth/login">Sign In</Link>
               </Button>
-            </>
-          )}
+            )}
+          </div>
         </div>
 
 
