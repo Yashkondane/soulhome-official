@@ -98,18 +98,21 @@ export default async function CheckoutSuccessPage({ searchParams }: SuccessPageP
         </CardHeader>
         <CardContent className="space-y-6">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            Thank you for joining us. You now have full access to all our resources.
+            Thank you for joining us. You can now download your first healings.
           </p>
 
 
           <div className="rounded-lg bg-secondary/50 p-4 text-left">
             <h3 className="font-semibold text-foreground">What you can do now:</h3>
             <ul className="mt-3 space-y-3">
-              {features.map((feature) => (
-                <li key={feature.text} className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">{feature.text}</span>
-                </li>
-              ))}
+              <li className="flex items-center gap-3">
+                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm text-muted-foreground">Download any 3 healings per month</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <CheckCircle2 className="h-4 w-4 text-primary shrink-0" />
+                <span className="text-sm text-muted-foreground">Access to meditation library</span>
+              </li>
             </ul>
           </div>
 

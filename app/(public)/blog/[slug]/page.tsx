@@ -79,7 +79,9 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
 
         {/* Markdown Content */}
         <div className="prose prose-lg dark:prose-invert prose-headings:font-serif prose-headings:font-semibold prose-a:text-primary hover:prose-a:text-primary/80 max-w-none mb-20 prose-img:rounded-xl prose-img:border prose-img:border-border/50">
-          <ReactMarkdown>{blog.content}</ReactMarkdown>
+          <ReactMarkdown>
+            {blog.content.replace(/\n/g, '\n\n')}
+          </ReactMarkdown>
         </div>
 
         {/* Image Gallery (Minimum 3 images support) */}

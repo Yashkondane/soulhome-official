@@ -16,11 +16,12 @@ export const PRODUCTS: Product[] = [
   {
     id: 'monthly-membership',
     name: 'Monthly Membership',
-    description: 'Full access to all resources, teachings, and community',
+    description: 'Download any 3 healings per month',
     priceInCents: 7700, // £77.00
     interval: 'month',
     type: 'subscription',
     features: [
+      'Download any 3 healings per month',
       'PDF guides and worksheets',
       'Audio meditations and practices',
       'Video teachings and workshops',

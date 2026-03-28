@@ -88,6 +88,7 @@ export async function createCheckoutSession(productId: string) {
     ],
     mode: product.type === 'subscription' ? 'subscription' : 'payment',
     ui_mode: 'embedded',
+    payment_method_types: ['card', 'link'],
     return_url: `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
     metadata: {
       user_id: user.id,
@@ -152,14 +153,24 @@ export async function cancelSubscription() {
     throw new Error("No active subscription found")
   }
 
-  // Cancel immediately in Stripe (not at period end)
-  await stripe.subscriptions.cancel(subscription.stripe_subscription_id)
+  // Cancel at the end of the current billing period (respecting the 30-day notice period)
+  await stripe.subscriptions.update(subscription.stripe_subscription_id, {
+    cancel_at_period_end: true,
+  })
 
-  // Immediately revoke access in Supabase
+  // Update status in Supabase but keep access until period end
   await supabase
     .from('subscriptions')
-    .update({ status: 'canceled', cancel_at_period_end: false })
+    .update({ 
+      status: 'active', // Keep active until Stripe webhook actually cancels it at period end
+      cancel_at_period_end: true,
+      updated_at: new Date().toISOString()
+    })
     .eq('id', subscription.id)
 
+  // Log the cancellation request for admin notification
+  // Since we don't have an email service, we record this event
+  console.log(`CANCELLATION REQUESTED: User ${user.email} (${user.id}) requested cancellation for subscription ${subscription.stripe_subscription_id}`)
+  
   return { success: true }
 }

@@ -30,9 +30,22 @@ export default function ServicesPage() {
                             <p className="text-muted-foreground leading-relaxed text-balance text-sm max-w-sm mx-auto">
                                 Live video call sessions that only open seasonally. These sessions are curated with love for true healing and transformation, and are based on the energetic current of Earth.
                             </p>
-                            <Link href="https://calendly.com/soulhome-krisha" target="_blank" rel="noopener noreferrer" className="inline-block font-serif text-lg italic text-primary hover:text-primary/80 transition-colors">
-                                Know more here
-                            </Link>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                                <Link 
+                                    href="https://calendly.com/soulhome-krisha" 
+                                    target="_blank" 
+                                    rel="noopener noreferrer" 
+                                    className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95"
+                                >
+                                    BOOK HERE
+                                </Link>
+                                <Link 
+                                    href="/live-sessions" 
+                                    className="px-6 py-2 border border-primary text-primary text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/5 transition-all"
+                                >
+                                    Learn more
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
@@ -52,9 +65,20 @@ export default function ServicesPage() {
                             <p className="text-muted-foreground leading-relaxed text-balance text-sm max-w-sm mx-auto">
                                 A monthly membership to an online portal on this website, that allows you to access self-healing resources to enhance your life and spiritual journey through integration practices. If you resonate with my instagram content, this is a level up, and a deeper connection to your soul.
                             </p>
-                            <Link href="/membership" className="inline-block font-serif text-lg italic text-primary hover:text-primary/80 transition-colors">
-                                More info
-                            </Link>
+                            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+                                <Link 
+                                    href="/checkout" 
+                                    className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95 text-center"
+                                >
+                                    Become a Member
+                                </Link>
+                                <Link 
+                                    href="/membership" 
+                                    className="px-6 py-2 border border-primary text-primary text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/5 transition-all text-center"
+                                >
+                                    Learn more
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

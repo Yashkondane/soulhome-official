@@ -47,7 +47,19 @@ export default function MembershipPage() {
                 <ul className="space-y-4 text-[#885d7b] text-sm md:text-base leading-relaxed mb-8">
                   <li className="flex gap-3">
                     <span className="text-primary mt-1.5 shrink-0">•</span>
-                    <span>Cancel anytime with a month{"'"}s notice</span>
+                    <span>Free to become a member, and view topics of healing.</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary mt-1.5 shrink-0">•</span>
+                    <span>Subscribe and pay to download healings & resources</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary mt-1.5 shrink-0">•</span>
+                    <span>Monthly subscription</span>
+                  </li>
+                  <li className="flex gap-3">
+                    <span className="text-primary mt-1.5 shrink-0">•</span>
+                    <span>Cancel anytime with a month{"'"}s notice <span className="text-xs font-bold block mt-1">(30 days notice required for billing + notification sent to our team)</span></span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-primary mt-1.5 shrink-0">•</span>

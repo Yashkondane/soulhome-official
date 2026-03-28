@@ -85,12 +85,12 @@ export function CancelSubscriptionDialog({ username, periodEnd }: CancelSubscrip
                     {/* Warning box */}
                     <div className="rounded-lg border border-destructive/20 bg-destructive/5 p-4 space-y-2">
                         <p className="text-sm font-medium text-destructive">
-                            ⚠️ Your subscription will be cancelled immediately.
+                            ⚠️ Your cancellation will take effect at the end of your billing cycle.
                         </p>
                         <ul className="text-sm text-muted-foreground space-y-1 list-disc list-inside">
-                            <li>No refunds will be provided.</li>
-                            <li>Your access to all resources will be revoked immediately.</li>
-                            <li>Any downloaded resources will no longer be available.</li>
+                            <li>This follows our 30-day notice requirement.</li>
+                            <li>You will keep access to all resources until <span className="font-bold underline Decoration-dotted Decoration-1 underline-offset-4">{periodEnd}</span>.</li>
+                            <li>No further charges will be made after this period.</li>
                         </ul>
                     </div>
 
