@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { User, CreditCard, Mail, ExternalLink } from "lucide-react"
+import { User, CreditCard, Mail } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 import { CancelSubscriptionDialog } from "./cancel-subscription-dialog"
 
@@ -103,12 +103,7 @@ export default async function SettingsPage() {
                     {new Date(subscription.current_period_end).toLocaleDateString()}
                   </span>
                 </div>
-                <Button variant="outline" className="w-full bg-transparent" asChild>
-                  <Link href="/dashboard/settings/billing">
-                    Manage Billing
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Link>
-                </Button>
+
                 <CancelSubscriptionDialog
                   username={username}
                   periodEnd={periodEndStr}

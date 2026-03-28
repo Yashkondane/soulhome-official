@@ -1,7 +1,6 @@
 import { getBlogBySlug, getPublishedBlogs } from "@/app/actions/blog"
 import { notFound } from "next/navigation"
 import Image from "next/image"
-import ReactMarkdown from "react-markdown"
 import { Calendar, User, ArrowLeft, Image as ImageIcon } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -77,11 +76,37 @@ export default async function BlogPostPage({ params }: { params: Promise<{ slug:
           />
         </div>
 
-        {/* Markdown Content */}
-        <div className="prose prose-lg dark:prose-invert prose-headings:font-serif prose-headings:font-semibold prose-a:text-primary hover:prose-a:text-primary/80 max-w-none mb-20 prose-img:rounded-xl prose-img:border prose-img:border-border/50">
-          <ReactMarkdown>
-            {blog.content.replace(/\n/g, '\n\n')}
-          </ReactMarkdown>
+        {/* Blog Content */}
+        <div className="max-w-none mb-20 text-foreground">
+          {blog.content.split(/\n\n+/).map((block: string, i: number) => {
+            const trimmed = block.trim()
+            if (!trimmed) return null
+
+            // Heading 1
+            if (trimmed.startsWith('# ')) {
+              return <h1 key={i} className="font-serif text-3xl sm:text-4xl font-bold text-primary mt-10 mb-4">{trimmed.slice(2)}</h1>
+            }
+            // Heading 2
+            if (trimmed.startsWith('## ')) {
+              return <h2 key={i} className="font-serif text-2xl sm:text-3xl font-bold text-primary mt-8 mb-4">{trimmed.slice(3)}</h2>
+            }
+            // Heading 3
+            if (trimmed.startsWith('### ')) {
+              return <h3 key={i} className="font-serif text-xl font-bold text-primary mt-6 mb-3">{trimmed.slice(4)}</h3>
+            }
+
+            // Regular paragraph — also handle single-line breaks within a block
+            return (
+              <p key={i} className="text-[1.05rem] leading-[1.9] text-foreground/90 mb-6 font-serif">
+                {trimmed.split('\n').map((line: string, j: number, arr: string[]) => (
+                  <span key={j}>
+                    {line}
+                    {j < arr.length - 1 && <br />}
+                  </span>
+                ))}
+              </p>
+            )
+          })}
         </div>
 
         {/* Image Gallery (Minimum 3 images support) */}

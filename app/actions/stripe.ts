@@ -158,12 +158,11 @@ export async function cancelSubscription() {
     cancel_at_period_end: true,
   })
 
-  // Update status in Supabase but keep access until period end
+  // Update status in Supabase — keep active until period end webhook fires
   await supabase
     .from('subscriptions')
     .update({ 
-      status: 'active', // Keep active until Stripe webhook actually cancels it at period end
-      cancel_at_period_end: true,
+      status: 'active',
       updated_at: new Date().toISOString()
     })
     .eq('id', subscription.id)
