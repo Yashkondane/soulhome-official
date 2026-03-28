@@ -153,10 +153,24 @@ export async function cancelSubscription() {
     throw new Error("No active subscription found")
   }
 
-  // Cancel at the end of the current billing period (respecting the 30-day notice period)
-  await stripe.subscriptions.update(subscription.stripe_subscription_id, {
-    cancel_at_period_end: true,
-  })
+  try {
+    // Cancel at the end of the current billing period (respecting the 30-day notice period)
+    await stripe.subscriptions.update(subscription.stripe_subscription_id, {
+      cancel_at_period_end: true,
+    })
+  } catch (stripeError: any) {
+    // If Stripe says the subscription doesn't exist (e.g. account was changed),
+    // just mark it as cancelled in Supabase so the user can re-subscribe cleanly.
+    if (stripeError?.code === 'resource_missing') {
+      console.warn(`Stripe subscription ${subscription.stripe_subscription_id} not found — marking as cancelled in DB.`)
+      await supabase
+        .from('subscriptions')
+        .update({ status: 'canceled', updated_at: new Date().toISOString() })
+        .eq('id', subscription.id)
+      return { success: true }
+    }
+    throw stripeError
+  }
 
   // Update status in Supabase — keep active until period end webhook fires
   await supabase

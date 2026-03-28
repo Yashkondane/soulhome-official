@@ -106,7 +106,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/download (7).png"
+                  src="/00100lPORTRAIT_00100_BURST20210814174512954_COVER.jpg"
                   alt="Multidimensional Healing"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -127,7 +127,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/download (6).png"
+                  src="/00100lPORTRAIT_00100_BURST20210814174642473_COVER~2.jpg"
                   alt="Akashic Field Integration"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -148,7 +148,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/download (5).png"
+                  src="/00100lPORTRAIT_00100_BURST20210814182905413_COVER~2.jpg"
                   alt="Embodied Sovereignty"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
