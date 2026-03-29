@@ -3,6 +3,7 @@
 import Stripe from "stripe"
 import { createClient } from "@/lib/server"
 import { getProduct, PRODUCTS } from "@/lib/products"
+import { rateLimit } from "@/lib/rate-limit"
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
@@ -12,6 +13,12 @@ export async function createCheckoutSession(productId: string) {
 
   if (!user) {
     throw new Error("Not authenticated")
+  }
+
+  // Rate Limiting: 5 checkout attempts per 2 minutes per user
+  const { success } = rateLimit(`checkout:${user.id}`, 5, 120000)
+  if (!success) {
+    throw new Error("Too many checkout attempts. Please wait a few minutes before trying again.")
   }
 
   const product = getProduct(productId)
@@ -93,8 +100,18 @@ export async function createCheckoutSession(productId: string) {
     metadata: {
       user_id: user.id,
       product_id: productId,
-      type: product.type, // Pass type to webhook
+      type: product.type,
     },
+    // CRITICAL: Pass metadata directly to the subscription object
+    // so the webhook can read user_id from subscription.metadata
+    ...(product.type === 'subscription' ? {
+      subscription_data: {
+        metadata: {
+          supabase_user_id: user.id,
+          product_id: productId,
+        }
+      }
+    } : {}),
   })
 
   return { clientSecret: session.client_secret }
@@ -140,6 +157,12 @@ export async function cancelSubscription() {
 
   if (!user) {
     throw new Error("Not authenticated")
+  }
+
+  // Rate Limiting: 3 cancellations per 10 minutes per user
+  const { success } = rateLimit(`cancel_sub:${user.id}`, 3, 600000)
+  if (!success) {
+    throw new Error("Too many cancellation attempts. Please contact support if you need assistance.")
   }
 
   const { data: subscription } = await supabase

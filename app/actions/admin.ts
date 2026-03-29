@@ -2,12 +2,17 @@
 
 import { createClient } from "@/lib/server";
 import { revalidatePath } from "next/cache";
+import { rateLimit } from "@/lib/rate-limit";
 
 export async function createResource(formData: FormData) {
   const supabase = await createClient();
 
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Unauthorized");
+
+  // Rate Limiting: 20 admin actions per hour
+  const { success } = rateLimit(`admin:${user.id}`, 20, 3600000)
+  if (!success) throw new Error("Too many admin actions. Please slow down.");
 
   // Check if admin
   const { data: profile } = await supabase

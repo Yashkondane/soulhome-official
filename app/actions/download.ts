@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/server"
 import { grantFolderAccess, getFileIdFromUrl } from "@/lib/google-drive"
 import { revalidatePath } from "next/cache"
+import { rateLimit } from "@/lib/rate-limit"
 
 export async function downloadResource(resourceId: string, resourceUrl: string, resourceSlug: string) {
     const supabase = await createClient()
@@ -10,6 +11,10 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
     // 1. Check Auth
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) throw new Error("Unauthorized")
+
+    // Rate Limiting: 10 download attempts per 5 minutes per user
+    const { success } = rateLimit(`download:${user.id}`, 10, 300000)
+    if (!success) throw new Error("Too many download attempts. Please wait a few minutes.")
 
     // 2. Check Subscription
     const { data: subscription } = await supabase

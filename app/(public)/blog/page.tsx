@@ -1,7 +1,8 @@
-import { getPublishedBlogs } from "@/app/actions/blog"
+
 import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, Calendar, User } from "lucide-react"
+import { getPublishedBlogs } from "@/app/actions/blog"
 
 export const metadata = {
   title: "Blog | Soulhome",
@@ -28,16 +29,16 @@ export default async function BlogPage() {
 
         {blogs && blogs.length > 0 ? (
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            {blogs.map((blog) => (
+            {blogs.map((blog: any) => (
               <Link key={blog.id} href={`/blog/${blog.slug}`} className="group block">
                 <Card className="h-full border-border/50 bg-secondary/10 backdrop-blur-sm overflow-hidden transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1">
                   <div className="aspect-[4/3] overflow-hidden relative">
-                     <img 
-                       src={blog.cover_image_url} 
-                       alt={blog.title} 
-                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                     />
-                     <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    <img
+                      src={blog.cover_image_url}
+                      alt={blog.title}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                   </div>
                   <CardContent className="p-6">
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
@@ -50,11 +51,11 @@ export default async function BlogPage() {
                         {((blog.profiles as any)?.full_name) || 'Soulhome'}
                       </div>
                     </div>
-                    
+
                     <h2 className="font-serif text-xl font-medium text-foreground mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                       {blog.title}
                     </h2>
-                    
+
                     {blog.excerpt && (
                       <p className="text-sm text-muted-foreground line-clamp-3 mb-4 leading-relaxed">
                         {blog.excerpt}
@@ -62,7 +63,7 @@ export default async function BlogPage() {
                     )}
 
                     <div className="flex items-center text-sm font-medium text-primary mt-auto">
-                      Read Article 
+                      Read Article
                       <ArrowRight className="w-4 h-4 ml-1.5 transition-transform group-hover:translate-x-1" />
                     </div>
                   </CardContent>

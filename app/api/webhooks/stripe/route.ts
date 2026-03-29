@@ -86,21 +86,34 @@ export async function POST(request: Request) {
             .update(subscriptionData)
             .eq('stripe_subscription_id', subscription.id)
         } else {
-          // If subscription doesn't exist, we need to create it.
-          // First, fetch the customer to get the metadata with supabase_user_id
-          const customer = await stripe.customers.retrieve(subscription.customer as string)
+          // === FIND THE USER ID ===
+          // Priority 1: Read from subscription metadata (most reliable)
+          let supabaseUserId = subscription.metadata?.supabase_user_id
 
-          if ((customer as any).deleted) {
-            console.error("Customer deleted, cannot create subscription")
-            break
+          // Priority 2: Fall back to customer metadata
+          if (!supabaseUserId) {
+            console.warn(`[Webhook] No user_id in subscription metadata, checking customer...`)
+            const customer = await stripe.customers.retrieve(subscription.customer as string)
+            if (!(customer as any).deleted) {
+              supabaseUserId = (customer as Stripe.Customer).metadata?.supabase_user_id
+            }
           }
 
-          // Safe access to metadata
-          const customerData = customer as Stripe.Customer
-          const supabaseUserId = customerData.metadata?.supabase_user_id
+          // Priority 3: Fall back to looking up profile by stripe_customer_id
+          if (!supabaseUserId) {
+            console.warn(`[Webhook] No user_id in customer metadata, checking profiles table...`)
+            const { data: profileMatch } = await supabase
+              .from('profiles')
+              .select('id')
+              .eq('stripe_customer_id', subscription.customer as string)
+              .single()
+            if (profileMatch) {
+              supabaseUserId = profileMatch.id
+            }
+          }
 
           if (supabaseUserId) {
-            console.log(`Creating subscription for user ${supabaseUserId}`)
+            console.log(`[Webhook] Creating subscription for user ${supabaseUserId}`)
 
             const insertData = {
               user_id: supabaseUserId,
@@ -112,26 +125,25 @@ export async function POST(request: Request) {
             const { error: insertError } = await supabase.from('subscriptions').insert(insertData)
 
             if (insertError) {
-              console.error("Error inserting subscription to Supabase:", insertError)
+              console.error("[Webhook] Error inserting subscription:", insertError)
             } else {
-              console.log("Subscription created successfully")
+              console.log("[Webhook] Subscription created successfully!")
 
               // Grant Google Drive Access
               try {
                 const folderId = process.env.GOOGLE_DRIVE_RESOURCE_ID
-                if (folderId && customerData.email) {
-                  await grantFolderAccess(customerData.email, folderId)
-                } else {
-                  console.warn("Skipping Drive Access: Missing GOOGLE_DRIVE_RESOURCE_ID or customer email.")
+                const customer = await stripe.customers.retrieve(subscription.customer as string)
+                const email = !(customer as any).deleted ? (customer as Stripe.Customer).email : null
+                if (folderId && email) {
+                  await grantFolderAccess(email, folderId)
                 }
               } catch (driveErr) {
-                console.error("Failed to grant Drive access:", driveErr)
-                // We don't fail the webhook, just log it
+                console.error("[Webhook] Failed to grant Drive access:", driveErr)
               }
             }
 
           } else {
-            console.error("No supabase_user_id found in customer metadata for subscription:", subscription.id)
+            console.error("[Webhook] CRITICAL: Could not find user for subscription:", subscription.id, "customer:", subscription.customer)
           }
         }
         break
@@ -217,12 +229,72 @@ export async function POST(request: Request) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session
 
-        // Check if this is a one-time payment for an event
+        // === SAFETY NET: Handle subscription fulfillment ===
+        // If subscription.created webhook missed the activation, this catches it
+        if (session.mode === 'subscription' && session.subscription) {
+          const userId = session.metadata?.user_id
+          const subscriptionId = typeof session.subscription === 'string' 
+            ? session.subscription 
+            : session.subscription.id
+
+          if (userId) {
+            // Check if subscription already exists in our DB
+            const { data: existingSub } = await supabase
+              .from('subscriptions')
+              .select('id')
+              .eq('stripe_subscription_id', subscriptionId)
+              .single()
+
+            if (!existingSub) {
+              console.log(`[Webhook] checkout.session.completed: Creating missing subscription for user ${userId}`)
+              
+              // Retrieve the full subscription from Stripe
+              const subscription = await stripe.subscriptions.retrieve(subscriptionId)
+              const currentPeriodStart = (subscription as any).current_period_start
+              const currentPeriodEnd = (subscription as any).current_period_end
+
+              const { error: insertError } = await supabase.from('subscriptions').insert({
+                user_id: userId,
+                stripe_customer_id: session.customer as string,
+                stripe_subscription_id: subscriptionId,
+                status: 'active',
+                plan_id: session.metadata?.product_id || 'monthly-membership',
+                current_period_start: currentPeriodStart 
+                  ? new Date(currentPeriodStart * 1000).toISOString() 
+                  : new Date().toISOString(),
+                current_period_end: currentPeriodEnd 
+                  ? new Date(currentPeriodEnd * 1000).toISOString() 
+                  : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+                cancel_at_period_end: false,
+              })
+
+              if (insertError) {
+                console.error("[Webhook] checkout.session.completed insert error:", insertError)
+              } else {
+                console.log("[Webhook] checkout.session.completed: Subscription activated successfully!")
+                
+                // Grant Google Drive Access
+                try {
+                  const folderId = process.env.GOOGLE_DRIVE_RESOURCE_ID
+                  const customer = await stripe.customers.retrieve(session.customer as string)
+                  const email = !(customer as any).deleted ? (customer as Stripe.Customer).email : null
+                  if (folderId && email) {
+                    await grantFolderAccess(email, folderId)
+                  }
+                } catch (driveErr) {
+                  console.error("[Webhook] Drive access error:", driveErr)
+                }
+              }
+            } else {
+              console.log(`[Webhook] checkout.session.completed: Subscription already exists, skipping.`)
+            }
+          }
+        }
+
+        // Handle one-time payments for events
         if (session.mode === 'payment' && session.metadata?.type === 'one_time') {
           const userId = session.metadata.user_id
-          const productId = session.metadata.product_id
 
-          // Record the booking
           await supabase.from('bookings').insert({
             user_id: userId,
             stripe_session_id: session.id,
@@ -230,8 +302,6 @@ export async function POST(request: Request) {
             amount_paid: session.amount_total,
             currency: session.currency,
             status: 'paid',
-            // We could link to an event_id here if we map productId -> event_id
-            // for now we'll store the stripe_session_id which serves as proof
           })
         }
         break
