@@ -2,6 +2,8 @@ import React from "react"
 import { redirect } from "next/navigation"
 import Link from "next/link"
 import { createClient } from "@/lib/server"
+
+export const dynamic = "force-dynamic"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { LayoutDashboard, Library, Download, Settings, LogOut, Shield, AlertTriangle } from "lucide-react"
