@@ -49,19 +49,16 @@ export default async function DashboardPage() {
     .from('resources')
     .select('*', { count: 'exact', head: true })
     .eq('type', 'pdf')
-    .eq('is_published', true)
 
   const { count: audioCount } = await supabase
     .from('resources')
     .select('*', { count: 'exact', head: true })
     .eq('type', 'audio')
-    .eq('is_published', true)
 
   const { count: videoCount } = await supabase
     .from('resources')
     .select('*', { count: 'exact', head: true })
     .eq('type', 'video')
-    .eq('is_published', true)
 
   // Get recent resources
   const { data: recentResources } = await supabase

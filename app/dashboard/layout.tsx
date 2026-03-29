@@ -90,9 +90,15 @@ export default async function DashboardLayout({
                         <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                           Active
                         </span>
-                        <p className="mt-2 text-xs text-muted-foreground">
-                          Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
-                        </p>
+                        {subscription.cancel_at_period_end ? (
+                          <p className="mt-2 text-xs text-amber-600 dark:text-amber-500 font-medium">
+                            Ends on: {new Date(subscription.current_period_end).toLocaleDateString()}
+                          </p>
+                        ) : (
+                          <p className="mt-2 text-xs text-muted-foreground">
+                            Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
+                          </p>
+                        )}
                       </div>
                     ) : pastDueSub ? (
                       <div className="mt-2">
@@ -180,9 +186,15 @@ export default async function DashboardLayout({
                 <span className="inline-flex items-center rounded-full bg-primary/10 px-2 py-1 text-xs font-medium text-primary">
                   Active
                 </span>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
-                </p>
+                {subscription.cancel_at_period_end ? (
+                  <p className="mt-2 text-xs text-amber-600 dark:text-amber-500 font-medium">
+                    Ends on: {new Date(subscription.current_period_end).toLocaleDateString()}
+                  </p>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Renews: {new Date(subscription.current_period_end).toLocaleDateString()}
+                  </p>
+                )}
               </div>
             ) : pastDueSub ? (
               <div className="mt-2">
