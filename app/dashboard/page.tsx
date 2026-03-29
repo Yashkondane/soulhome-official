@@ -19,12 +19,15 @@ export default async function DashboardPage() {
   }
 
   // Get user's active subscription for download counter
-  const { data: subscription } = await supabase
+  const { data: subscriptions } = await supabase
     .from('subscriptions')
     .select('downloads_used, downloads_limit, current_period_end')
     .eq('user_id', user.id)
     .eq('status', 'active')
-    .single()
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  const subscription = subscriptions?.[0] || null
 
   const downloadsUsed = subscription?.downloads_used ?? 0
   const downloadsLimit = subscription?.downloads_limit ?? 3

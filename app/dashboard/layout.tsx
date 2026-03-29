@@ -26,12 +26,16 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single()
 
-  const { data: subscription } = await supabase
+  // Get user's most recent active subscription
+  const { data: subscriptions } = await supabase
     .from('subscriptions')
     .select('*')
     .eq('user_id', user.id)
     .eq('status', 'active')
-    .single()
+    .order('created_at', { ascending: false })
+    .limit(1)
+
+  const subscription = subscriptions?.[0] || null
 
   // Also check for past_due subscriptions
   const { data: pastDueSub } = await supabase
