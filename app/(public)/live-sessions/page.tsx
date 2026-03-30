@@ -153,14 +153,14 @@ export default function LiveSessionsPage() {
             {/* Right: Image with Overlay (5/12) */}
             <div className="lg:col-span-5 relative aspect-[4/5] rounded-[2rem] overflow-hidden shadow-2xl group">
               <Image
-                src="/00100lPORTRAIT_00100_BURST20210814174642473_COVER~2.jpg"
-                alt="Krisha in nature"
+                src="/live%20session.jpg"
+                alt="Krisha - Live Video Session"
                 fill
                 className="object-cover transition-transform duration-1000 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-purple-900/60 via-purple-800/10 to-transparent opacity-90" />
               <div className="absolute bottom-10 left-0 right-0 text-center px-6">
-                <p className="font-serif italic text-white text-xl leading-relaxed shadow-sm">
+                <p className="font-serif italic text-white text-xl leading-relaxed drop-shadow-lg">
                   Transforming dense karma into spiritual light.
                 </p>
               </div>
