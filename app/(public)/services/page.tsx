@@ -1,5 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
+import { SubscribeDialog } from "../membership/subscribe-dialog"
 
 export default function ServicesPage() {
     return (
@@ -66,12 +67,11 @@ export default function ServicesPage() {
                                 A monthly membership to an online portal on this website, that allows you to access self-healing resources to enhance your life and spiritual journey through integration practices. If you resonate with my instagram content, this is a level up, and a deeper connection to your soul.
                             </p>
                             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                                <Link 
-                                    href="/checkout" 
+                                <SubscribeDialog 
+                                    planId="monthly-membership"
+                                    buttonText="Become a Member"
                                     className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95 text-center"
-                                >
-                                    Become a Member
-                                </Link>
+                                />
                                 <Link 
                                     href="/membership" 
                                     className="px-6 py-2 border border-primary text-primary text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/5 transition-all text-center"

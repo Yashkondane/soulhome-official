@@ -14,6 +14,7 @@ import {
 import { DecorativeArch } from "@/components/decorative-arch"
 import { DecorativeCircle } from "@/components/decorative-circle"
 import { TestimonialMasonry } from "@/components/testimonial-masonry"
+import { SubscribeDialog } from "./membership/subscribe-dialog"
 import Image from "next/image"
 
 
@@ -94,11 +95,11 @@ export default function HomePage() {
                   Book a Session
                 </Link>
               </Button>
-              <Button size="lg" asChild className="text-lg px-8 py-6 bg-primary/80 backdrop-blur-sm text-white border border-primary/50 hover:bg-primary shadow-xl">
-                <Link href="/membership">
-                  Become a Member
-                </Link>
-              </Button>
+              <SubscribeDialog 
+                planId="monthly-membership"
+                buttonText="Become a Member"
+                className="text-lg px-8 py-6 bg-primary/80 backdrop-blur-sm text-white border border-primary/50 hover:bg-primary shadow-xl"
+              />
               <Button variant="outline" size="lg" asChild className="text-lg px-8 py-6 bg-white/10 backdrop-blur-sm text-white border-white/50 hover:bg-white/20 shadow-xl">
                 <Link href="/about">Learn More</Link>
               </Button>
@@ -212,12 +213,11 @@ export default function HomePage() {
                   A monthly membership to an online portal on this website, that allows you to access self-healing resources to enhance your life and spiritual journey through integration practices. If you resonate with my instagram content, this is a level up, and a deeper connection to your soul.
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
-                  <Link 
-                    href="/checkout" 
+                  <SubscribeDialog 
+                    planId="monthly-membership"
+                    buttonText="Become a Member"
                     className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95 text-center"
-                  >
-                    Become a Member
-                  </Link>
+                  />
                   <Link 
                     href="/membership" 
                     className="px-6 py-2 border border-primary text-primary text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/5 transition-all text-center"
@@ -257,12 +257,11 @@ export default function HomePage() {
             <p className="text-xl text-primary-foreground/90 mb-10">
               Join our sacred community and start your journey to awakening with just £77 per month.
             </p>
-            <Button size="lg" variant="secondary" asChild className="text-lg px-8 py-6">
-              <Link href="/membership">
-                Become a Member
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
+            <SubscribeDialog 
+              planId="monthly-membership"
+              buttonText="Become a Member"
+              className="text-lg px-8 py-6 bg-secondary text-secondary-foreground hover:bg-secondary/90 shadow-lg"
+            />
           </div>
         </div>
       </section>
