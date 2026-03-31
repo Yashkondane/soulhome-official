@@ -25,18 +25,23 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const [isPending, setIsPending] = useState(false)
+  const [showError, setShowError] = useState(false)
   const [checks, setChecks] = useState({
     age: false,
     terms: false,
+    privacy: false,
     downloads: false,
     safety: false,
   })
 
   // All boxes must be checked
-  const isReady = checks.age && checks.terms && checks.downloads && checks.safety
+  const isReady = checks.age && checks.terms && checks.privacy && checks.downloads && checks.safety
 
   const handleSubscribe = () => {
-    if (!isReady) return
+    if (!isReady) {
+      setShowError(true)
+      return
+    }
     setIsPending(true)
     // Small delay for UI feedback before redirect
     setTimeout(() => {
@@ -49,7 +54,14 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
     setOpen(val)
     if (!val) {
       setTimeout(() => {
-        setChecks({ age: false, terms: false, downloads: false, safety: false })
+        setChecks({ 
+          age: false, 
+          terms: false, 
+          privacy: false,
+          downloads: false, 
+          safety: false 
+        })
+        setShowError(false)
         setIsPending(false)
       }, 300)
     }
@@ -78,7 +90,10 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
               <Checkbox 
                 id="check-age" 
                 checked={checks.age} 
-                onCheckedChange={(c) => setChecks(prev => ({ ...prev, age: c as boolean }))} 
+                onCheckedChange={(c) => {
+                  setChecks(prev => ({ ...prev, age: c as boolean }))
+                  if (c) setShowError(false)
+                }} 
                 className="mt-1"
               />
               <Label htmlFor="check-age" className="text-sm leading-snug cursor-pointer font-normal">
@@ -91,11 +106,45 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
               <Checkbox 
                 id="check-terms" 
                 checked={checks.terms} 
-                onCheckedChange={(c) => setChecks(prev => ({ ...prev, terms: c as boolean }))} 
+                onCheckedChange={(c) => {
+                  setChecks(prev => ({ ...prev, terms: c as boolean }))
+                  if (c) setShowError(false)
+                }} 
                 className="mt-1"
               />
               <Label htmlFor="check-terms" className="text-sm leading-snug cursor-pointer font-normal text-foreground">
-                <span className="font-medium">I have read & agree to all terms & conditions</span>
+                I have read and agree to the{" "}
+                <a 
+                  href="/terms" 
+                  target="_blank" 
+                  className="font-medium text-primary hover:underline underline-offset-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Terms & Conditions
+                </a>
+              </Label>
+            </div>
+
+            <div className="flex items-start space-x-3">
+              <Checkbox 
+                id="check-privacy" 
+                checked={checks.privacy} 
+                onCheckedChange={(c) => {
+                  setChecks(prev => ({ ...prev, privacy: c as boolean }))
+                  if (c) setShowError(false)
+                }} 
+                className="mt-1"
+              />
+              <Label htmlFor="check-privacy" className="text-sm leading-snug cursor-pointer font-normal text-foreground">
+                I have read and agree to the{" "}
+                <a 
+                  href="/privacy" 
+                  target="_blank" 
+                  className="font-medium text-primary hover:underline underline-offset-4"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  Privacy Policy
+                </a>
               </Label>
             </div>
 
@@ -103,7 +152,10 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
               <Checkbox 
                 id="check-downloads" 
                 checked={checks.downloads} 
-                onCheckedChange={(c) => setChecks(prev => ({ ...prev, downloads: c as boolean }))} 
+                onCheckedChange={(c) => {
+                  setChecks(prev => ({ ...prev, downloads: c as boolean }))
+                  if (c) setShowError(false)
+                }} 
                 className="mt-1"
               />
               <Label htmlFor="check-downloads" className="text-sm leading-snug cursor-pointer font-normal text-foreground">
@@ -115,7 +167,10 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
               <Checkbox 
                 id="check-safety" 
                 checked={checks.safety} 
-                onCheckedChange={(c) => setChecks(prev => ({ ...prev, safety: c as boolean }))} 
+                onCheckedChange={(c) => {
+                  setChecks(prev => ({ ...prev, safety: c as boolean }))
+                  if (c) setShowError(false)
+                }} 
                 className="mt-1"
               />
               <Label htmlFor="check-safety" className="text-sm leading-snug cursor-pointer font-normal text-foreground">
@@ -131,11 +186,16 @@ export function SubscribeDialog({ planId, buttonText = "Subscribe Now", classNam
           </div>
         </div>
 
-        <DialogFooter className="mt-2 text-center sm:justify-center">
+        <DialogFooter className="flex-col gap-3 sm:flex-col sm:justify-center">
+          {showError && (
+            <p className="text-sm text-center font-medium text-destructive animate-in fade-in slide-in-from-top-1">
+              Please tick all boxes to confirm you agree before proceeding.
+            </p>
+          )}
           <Button 
             size="lg" 
-            className="w-full sm:w-auto" 
-            disabled={!isReady || isPending}
+            className="w-full" 
+            disabled={isPending}
             onClick={handleSubscribe}
           >
             {isPending ? (
