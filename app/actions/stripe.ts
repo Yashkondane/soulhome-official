@@ -200,6 +200,7 @@ export async function cancelSubscription() {
     .from('subscriptions')
     .update({ 
       status: 'active',
+      cancel_at_period_end: true,
       updated_at: new Date().toISOString()
     })
     .eq('id', subscription.id)

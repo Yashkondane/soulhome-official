@@ -149,6 +149,8 @@ export async function POST(request: Request) {
         break
       }
 
+import { sendCancellationEmail } from "@/app/actions/email"
+
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription
 
@@ -158,28 +160,43 @@ export async function POST(request: Request) {
           .update({ status: 'canceled' })
           .eq('stripe_subscription_id', subscription.id)
 
-        // 2. Revoke Google Drive Access for ALL downloads
-        // We need to find the user_id first
-        const { data: subData } = await supabase
+        // 2. Fetch user data for cancellation email
+        const { data: userData } = await supabase
           .from('subscriptions')
-          .select('user_id')
+          .select('user_id, current_period_end')
           .eq('stripe_subscription_id', subscription.id)
           .single()
 
-        if (subData?.user_id) {
-          // Get all downloads with permission IDs
+        if (userData?.user_id) {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('full_name, email')
+            .eq('id', userData.user_id)
+            .single()
+
+          if (profile?.email) {
+            const name = profile.full_name || 'there'
+            const periodEnd = new Date(userData.current_period_end).toLocaleDateString('en-GB', {
+              day: 'numeric',
+              month: 'long',
+              year: 'numeric'
+            })
+
+            // Trigger Cancellation Email (Async)
+            sendCancellationEmail(profile.email, name, periodEnd).catch(err => {
+              console.error("[Webhook] Failed to send cancellation email:", err)
+            })
+          }
+
+          // 3. Revoke Google Drive Access for ALL downloads
           const { data: downloads } = await supabase
             .from('downloads')
             .select('drive_permission_id, drive_file_id')
-            .eq('user_id', subData.user_id)
+            .eq('user_id', userData.user_id)
             .not('drive_permission_id', 'is', null)
 
           if (downloads && downloads.length > 0) {
-            console.log(`Revoking ${downloads.length} Drive permissions for user ${subData.user_id}...`)
-
-            // We shouldn't await inside a loop if we can avoid it, but for API rate limits simple sequential is safer
-            // or Promise.all with concurrency limit. Given typical user doesn't have 1000s, Promise.all is ok-ish 
-            // but let's be safe and do sequential or batches.
+            console.log(`Revoking ${downloads.length} Drive permissions for user ${userData.user_id}...`)
             for (const d of downloads) {
               if (d.drive_permission_id && d.drive_file_id) {
                 try {

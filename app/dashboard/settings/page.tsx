@@ -7,6 +7,7 @@ import Link from "next/link"
 import { User, CreditCard, Mail } from "lucide-react"
 import { ProfileForm } from "./profile-form"
 import { CancelSubscriptionDialog } from "./cancel-subscription-dialog"
+import { BillingPortalButton } from "@/components/billing-portal-button"
 
 export default async function SettingsPage() {
   const supabase = await createClient()
@@ -87,9 +88,15 @@ export default async function SettingsPage() {
               <>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Status</span>
-                  <Badge variant="secondary" className="bg-primary/10 text-primary">
-                    Active
-                  </Badge>
+                  {subscription.cancel_at_period_end ? (
+                    <Badge variant="secondary" className="bg-amber-100 text-amber-700 border-amber-200">
+                      Cancelled
+                    </Badge>
+                  ) : (
+                    <Badge variant="secondary" className="bg-primary/10 text-primary">
+                      Active
+                    </Badge>
+                  )}
                 </div>
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-muted-foreground">Subscribed On</span>
@@ -98,16 +105,30 @@ export default async function SettingsPage() {
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Renews On</span>
+                  <span className="text-sm text-muted-foreground">
+                    {subscription.cancel_at_period_end ? "Ends On" : "Renews On"}
+                  </span>
                   <span className="text-sm text-foreground font-medium">
                     {new Date(subscription.current_period_end).toLocaleDateString()}
                   </span>
                 </div>
 
-                <CancelSubscriptionDialog
-                  username={username}
-                  periodEnd={periodEndStr}
-                />
+                <div className="pt-2">
+                  <BillingPortalButton />
+                </div>
+
+                {subscription.cancel_at_period_end ? (
+                  <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
+                    <p className="text-sm text-amber-800 leading-relaxed font-medium">
+                      Your subscription is cancelled. If you want to continue, subscribe again after this period.
+                    </p>
+                  </div>
+                ) : (
+                  <CancelSubscriptionDialog
+                    username={username}
+                    periodEnd={periodEndStr}
+                  />
+                )}
               </>
             ) : (
               <>

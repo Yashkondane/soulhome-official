@@ -26,7 +26,15 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
 
     if (!subscription) throw new Error("No active subscription")
 
-    // 3. Check if already downloaded (Re-download is free)
+    // 3. Get Resource Details & File ID
+    const fileId = getFileIdFromUrl(resourceUrl)
+    if (!fileId) throw new Error("Invalid resource URL configuration")
+
+    // Fetch user email for Drive sharing
+    const { data: profile } = await supabase.from('profiles').select('email').eq('id', user.id).single()
+    if (!profile?.email) throw new Error("User email not found")
+
+    // 4. Check for Existing Download Record
     const { data: existingDownload } = await supabase
         .from('downloads')
         .select('*')
@@ -34,47 +42,36 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
         .eq('resource_id', resourceId)
         .single()
 
-    if (existingDownload) {
-        return { success: true, url: resourceUrl, message: "Already unlocked" }
-    }
-
-    // 4. Check Limit (3 New Downloads per Billing Period)
-    // Note: downloads_used is auto-incremented by trigger on insert, 
-    // but we should fail BEFORE insert if limit is reached.
-    if ((subscription.downloads_used || 0) >= (subscription.downloads_limit || 3)) {
-        throw new Error("Download limit reached for this month.")
-    }
-
-    // 5. Grant Google Drive Access
-    const fileId = getFileIdFromUrl(resourceUrl)
-    if (!fileId) {
-        throw new Error("Invalid resource URL configuration")
-    }
-
-    // We need to fetch the user's email to share with them
-    const { data: profile } = await supabase
-        .from('profiles')
-        .select('email')
-        .eq('id', user.id)
-        .single()
-
-    if (!profile?.email) throw new Error("User email not found")
-
-    let permissionId = null
+    // 5. Grant/Restore Google Drive Access (Idempotent)
+    // We do this even for existing downloads to restore access if it was previously revoked (e.g. after a sub break)
+    let permissionId = existingDownload?.drive_permission_id || null
     try {
         permissionId = await grantFolderAccess(profile.email, fileId)
     } catch (err: any) {
         console.error("Drive Grant Error:", err)
-        // Expose the error message to the client for debugging
         const errorMessage = err?.message || err?.error_description || "Unknown Drive API Error"
         throw new Error(`Google Drive Error: ${errorMessage}`)
     }
 
-    // 6. Record Download (Trigger will increment usage)
+    // 6. If ALREADY DOWNLOADED, we are done (Access restored, no quota used)
+    if (existingDownload) {
+        // Optional: Update the permission ID in case it changed
+        if (permissionId && permissionId !== existingDownload.drive_permission_id) {
+            await supabase.from('downloads').update({ drive_permission_id: permissionId }).eq('id', existingDownload.id)
+        }
+        return { success: true, url: resourceUrl, message: "Access Restored" }
+    }
+
+    // 7. NEW DOWNLOAD: Check Limit (3 New Downloads per Billing Period)
+    if ((subscription.downloads_used || 0) >= (subscription.downloads_limit || 3)) {
+        throw new Error("Download limit reached for this month.")
+    }
+
+    // 8. Record New Download (Trigger will increment usage)
     const { error } = await supabase.from('downloads').insert({
         user_id: user.id,
         resource_id: resourceId,
-        billing_period_start: subscription.current_period_start, // These might be null if not set correctly in webhook
+        billing_period_start: subscription.current_period_start,
         billing_period_end: subscription.current_period_end,
         drive_file_id: fileId,
         drive_permission_id: permissionId
@@ -82,8 +79,6 @@ export async function downloadResource(resourceId: string, resourceUrl: string, 
 
     if (error) {
         console.error("Database Insert Error:", error)
-        // Critical: We shared the file but DB failed. 
-        // Ideally we should revoke access here to be safe, but let's stick to simple logic for now.
         throw new Error("Failed to record download.")
     }
 
