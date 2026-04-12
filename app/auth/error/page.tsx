@@ -8,7 +8,7 @@ export default function AuthErrorPage() {
     <div className="flex min-h-screen flex-col items-center justify-center bg-secondary/30 px-4 py-12">
       <Link href="/" className="mb-8 flex items-center gap-2">
         <Sparkles className="h-8 w-8 text-primary" />
-        <span className="font-serif text-2xl font-semibold text-foreground">Kundalini Awakening</span>
+        <span className="font-serif text-2xl font-semibold text-foreground">Soulhome</span>
       </Link>
       
       <Card className="w-full max-w-md border-border/50 text-center">

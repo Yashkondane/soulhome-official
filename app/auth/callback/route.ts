@@ -14,14 +14,8 @@ export async function GET(request: Request) {
     const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
     
     if (!error && user) {
-      // Check if this is the user's first time signing in by checking if a profile exists
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .eq('id', user.id)
-        .single()
-
-      if (!profile) {
+      // Check if this is the user's first time signing in using a metadata flag
+      if (!user.user_metadata?.welcome_sent) {
         console.log(`[Auth Callback] New user detected: ${user.email}. Sending welcome email...`)
         
         // Use full_name from metadata or default to email prefix
@@ -30,6 +24,11 @@ export async function GET(request: Request) {
         // Trigger Welcome Email (Async)
         sendWelcomeEmail(user.email!, name).catch(err => {
           console.error("[Auth Callback] Failed to send welcome email:", err)
+        })
+
+        // Mark welcome email as sent in user metadata
+        await supabase.auth.updateUser({
+          data: { welcome_sent: true }
         })
       }
 

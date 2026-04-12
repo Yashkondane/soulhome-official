@@ -205,7 +205,28 @@ export async function cancelSubscription() {
     })
     .eq('id', subscription.id)
 
+  const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'there'
+  
+  // Try to find the period end date to include in the email
+  let periodEndString = 'the end of your current billing period';
+  if (subscription.current_period_end) {
+    periodEndString = new Date(subscription.current_period_end).toLocaleDateString('en-GB', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  }
+
+  // Import dynamically to avoid top-level issues if needed, or use static import
+  const { sendCancellationEmail } = await import('@/app/actions/email')
+  
+  // Send immediate cancellation confirmation
+  sendCancellationEmail(user.email!, name, periodEndString).catch(err => {
+    console.error("Failed to send immediate cancellation email:", err)
+  })
+
   // Log the cancellation request for admin notification
+
   // Since we don't have an email service, we record this event
   console.log(`CANCELLATION REQUESTED: User ${user.email} (${user.id}) requested cancellation for subscription ${subscription.stripe_subscription_id}`)
   
