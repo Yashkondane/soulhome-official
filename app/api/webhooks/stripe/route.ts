@@ -3,7 +3,7 @@ import { NextResponse } from "next/server"
 import Stripe from "stripe"
 import { createClient } from "@supabase/supabase-js"
 import { revokeFolderAccess, grantFolderAccess } from "@/lib/google-drive"
-
+import { sendCancellationEmail } from "@/app/actions/email"
 export async function POST(request: Request) {
   const body = await request.text()
   const headersList = await headers()
@@ -148,8 +148,6 @@ export async function POST(request: Request) {
         }
         break
       }
-
-import { sendCancellationEmail } from "@/app/actions/email"
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription
