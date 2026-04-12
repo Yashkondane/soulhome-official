@@ -131,6 +131,12 @@
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-libre), serif !important;
+    user-select: none; /* Prevent text selection */
+  }
+
+  /* Re-enable selection for inputs and text areas so they remain usable */
+  input, textarea {
+    user-select: text;
   }
 
   h1,

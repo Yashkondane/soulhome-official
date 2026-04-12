@@ -67,12 +67,12 @@ export default function HomePage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <Image
-            src="/HOMEPAGE (4).jpg"
+            src="/HOMEPAGE4 (2).jpg"
             alt="Soulhome Homepage"
             fill
             className="object-cover"
             priority
-            quality={90}
+            quality={85}
           />
           {/* Overlay for better text readability */}
           <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/30 to-black/50" />
@@ -116,11 +116,11 @@ export default function HomePage() {
             {/* Circular Image Cutout */}
             <div className="relative aspect-square w-full max-w-[500px] mx-auto rounded-full overflow-hidden border-[8px] border-primary/50 shadow-2xl">
               <Image
-                  src="/IMG_20210814_173621~2.jpg"
+                  src="/IMG_20210814_1736212.jpg"
                   alt="Soulhome spirit"
                   fill
                   className="object-cover object-center"
-                  quality={95}
+                  quality={85}
                 />
             </div>
 
@@ -165,7 +165,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center text-center space-y-6 h-full">
               <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <Image
-                  src="/live session.jpg"
+                  src="/livesession.jpg"
                   alt="1:1 Live Sessions"
                   fill
                   className="object-cover"
@@ -200,7 +200,7 @@ export default function HomePage() {
             <div className="flex flex-col items-center text-center space-y-6 h-full">
               <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
                 <Image
-                  src="/school.jpg"
+                  src="/school (1).jpg"
                   alt="Kundalini School"
                   fill
                   className="object-cover"

@@ -29,7 +29,7 @@ export default function AboutPage() {
             {/* Image Side */}
             <div className="relative aspect-[4/5] lg:aspect-square w-full max-w-md mx-auto lg:max-w-none rounded-2xl overflow-hidden shadow-2xl animate-in slide-in-from-right duration-700">
               <Image
-                src="/IMG_20210814_173621~2.jpg"
+                src="/IMG_20210814_1736212.jpg"
                 alt="Krisha"
                 fill
                 className="object-cover"
@@ -106,7 +106,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/00100lPORTRAIT_00100_BURST20210814174512954_COVER.jpg"
+                  src="/00100lPORTRAIT_00100_BURST20210814174512954_COVER (1).jpg"
                   alt="Multidimensional Healing"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -127,7 +127,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/00100lPORTRAIT_00100_BURST20210814174642473_COVER~2.jpg"
+                  src="/00100lPORTRAIT_00100_BURST20210814174642473_COVER2.jpg"
                   alt="Akashic Field Integration"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"
@@ -148,7 +148,7 @@ export default function AboutPage() {
             <div className="flex flex-col items-center text-center space-y-6">
               <div className="relative w-full aspect-square max-w-[300px] overflow-hidden rounded-t-full">
                 <Image
-                  src="/00100lPORTRAIT_00100_BURST20210814182905413_COVER~2.jpg"
+                  src="/00100lPORTRAIT_00100_BURST20210814182905413_COVER2.jpg"
                   alt="Embodied Sovereignty"
                   fill
                   className="object-cover hover:scale-105 transition-transform duration-700"

@@ -19,7 +19,7 @@ export default function ServicesPage() {
                     <div className="flex flex-col items-center text-center space-y-6 h-full">
                         <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
                             <Image
-                                src="/live session.jpg"
+                                src="/livesession.jpg"
                                 alt="1:1 Live Sessions"
                                 fill
                                 className="object-cover"
@@ -54,7 +54,7 @@ export default function ServicesPage() {
                     <div className="flex flex-col items-center text-center space-y-6 h-full">
                         <div className="relative aspect-square w-full max-w-[300px] rounded-full overflow-hidden shadow-xl border-4 border-white">
                             <Image
-                                src="/school.jpg"
+                                src="/school (1).jpg"
                                 alt="Self-Healing Portal"
                                 fill
                                 className="object-cover"

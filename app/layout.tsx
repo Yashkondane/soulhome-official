@@ -37,6 +37,7 @@ export const metadata: Metadata = {
 import { Preloader } from "@/components/preloader"
 import { Toaster } from "@/components/ui/sonner"
 import { CookieConsent } from "@/components/cookie-consent"
+import { ContentProtection } from "@/components/content-protection"
 
 export default function RootLayout({
   children,
@@ -46,6 +47,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning className="overflow-x-hidden">
       <body className={`${libreBaskerville.variable} font-serif antialiased bg-background text-foreground overflow-x-hidden w-full`}>
+        <ContentProtection />
         <Preloader />
         <Analytics />
         {children}
