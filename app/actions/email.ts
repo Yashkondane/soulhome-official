@@ -60,8 +60,38 @@ export async function sendCancellationEmail(email: string, name: string, periodE
                 </div>
             `
         });
-        console.log(`Cancellation email sent to ${email}`);
-    } catch (error) {
-        console.error("Error sending cancellation email:", error);
+    }
+}
+
+export async function sendContactEmail(name: string, email: string, subject: string, message: string) {
+    if (!process.env.RESEND_API_KEY) {
+        console.warn("Skipping Contact Email: RESEND_API_KEY not found.");
+        return;
+    }
+
+    try {
+        await resend.emails.send({
+            from: 'Soul Home Contact <hello@soulhomelove.com>',
+            to: ['soulhome.krisha@gmail.com', 'kondaneyash@gmail.com'], // Admin emails
+            replyTo: email,
+            subject: `New Contact Form Submission: ${subject}`,
+            html: `
+                <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; color: #333;">
+                    <h1 style="color: #6d28d9;">New Message from Soul Home</h1>
+                    <p style="font-size: 16px;"><strong>Name:</strong> ${name}</p>
+                    <p style="font-size: 16px;"><strong>Email:</strong> ${email}</p>
+                    <p style="font-size: 16px;"><strong>Subject:</strong> ${subject}</p>
+                    <div style="background: #f3f4f6; padding: 20px; border-radius: 8px; margin: 20px 0; white-space: pre-wrap;">
+                        ${message}
+                    </div>
+                    <p style="font-size: 14px; color: #666;">You can reply directly to this email to respond to ${name}.</p>
+                </div>
+            `
+        });
+        console.log(`Contact form email sent from ${email}`);
+        return { success: true };
+    } catch (error: any) {
+        console.error("Error sending contact email:", error);
+        return { success: false, error: error.message };
     }
 }

@@ -7,6 +7,8 @@ const footerLinks = {
     { href: "/about", label: "About" },
     { href: "/#testimonials", label: "Testimonials" },
     { href: "/membership", label: "Membership" },
+    { href: "/blog", label: "Blog" },
+    { href: "/services", label: "1:1 Live Session" },
     { href: "/contact", label: "Contact" },
   ],
   legal: [

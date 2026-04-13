@@ -33,7 +33,7 @@ export default function ServicesPage() {
                             </p>
                             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 mt-auto">
                                 <Link 
-                                    href="https://calendly.com/soulhome-krisha" 
+                                    href="https://calendly.com/soulhome-love" 
                                     target="_blank" 
                                     rel="noopener noreferrer" 
                                     className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95"

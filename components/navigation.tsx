@@ -36,6 +36,11 @@ export function Navigation({ isLoggedIn = false, isAdmin = false }: NavigationPr
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  // Fix Radix UI body pointer-events bug when navigating from mobile menu
+  useEffect(() => {
+    document.body.style.pointerEvents = "auto"
+  }, [pathname])
+
   const isHome = pathname === "/"
   const isTransparent = isHome && !scrolled
   const isDarkText = !isHome && !scrolled

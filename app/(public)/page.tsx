@@ -91,7 +91,7 @@ export default function HomePage() {
 
             <div className="mt-12 flex flex-col items-center justify-center gap-4 sm:flex-row">
               <Button size="lg" asChild className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90 shadow-xl">
-                <Link href="https://calendly.com/soulhome-krisha" target="_blank" rel="noopener noreferrer">
+                <Link href="https://calendly.com/soulhome-love" target="_blank" rel="noopener noreferrer">
                   Book a Session
                 </Link>
               </Button>
@@ -179,7 +179,7 @@ export default function HomePage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 mt-auto">
                   <Link 
-                    href="https://calendly.com/soulhome-krisha" 
+                    href="https://calendly.com/soulhome-love" 
                     target="_blank" 
                     rel="noopener noreferrer" 
                     className="px-6 py-2 bg-primary text-white text-xs uppercase tracking-widest font-bold rounded-full hover:bg-primary/90 transition-all active:scale-95 text-center"

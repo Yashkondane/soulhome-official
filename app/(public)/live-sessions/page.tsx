@@ -215,7 +215,7 @@ export default function LiveSessionsPage() {
           </p>
           <div className="pt-4">
             <Button size="lg" className="bg-white text-primary hover:bg-white/90 rounded-full px-14 py-9 text-xl font-bold transition-all shadow-xl hover:scale-105" asChild>
-              <Link href="https://calendly.com/soulhome-krisha" target="_blank" rel="noopener noreferrer" className="no-underline">
+              <Link href="https://calendly.com/soulhome-love" target="_blank" rel="noopener noreferrer" className="no-underline">
                 BOOK YOUR SESSION HERE
               </Link>
             </Button>

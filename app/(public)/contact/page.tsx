@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { sendContactEmail } from "@/app/actions/email"
 
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
@@ -39,11 +40,24 @@ export default function ContactPage() {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000))
+    // Send email using server action
+    const result = await sendContactEmail(
+      formState.name,
+      formState.email,
+      formState.subject,
+      formState.message
+    )
 
     setIsSubmitting(false)
-    setIsSubmitted(true)
+
+    if (result?.success) {
+      setIsSubmitted(true)
+      setFormState({ name: "", email: "", subject: "", message: "" })
+    } else {
+      // In a real app we'd show a toast error, but for now we'll just log
+      console.error("Failed to send message:", result?.error)
+      alert("Failed to send message. Please try emailing us directly.")
+    }
     setFormState({ name: "", email: "", subject: "", message: "" })
   }
 
