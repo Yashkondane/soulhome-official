@@ -60,6 +60,9 @@ export async function sendCancellationEmail(email: string, name: string, periodE
                 </div>
             `
         });
+        console.log(`Cancellation email sent to ${email}`);
+    } catch (error) {
+        console.error("Error sending cancellation email:", error);
     }
 }
 
