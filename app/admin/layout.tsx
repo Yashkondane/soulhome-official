@@ -122,5 +122,4 @@ export default async function AdminLayout({
       </div>
     </div>
   )
-  )
 }
