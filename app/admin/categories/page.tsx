@@ -26,52 +26,62 @@ export default async function AdminCategoriesPage() {
   }, {} as Record<string, number>) || {}
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h1 className="font-serif text-3xl font-bold text-foreground">Categories</h1>
-        <p className="mt-2 text-muted-foreground">
-          Organize your resources into categories.
+    <div className="space-y-10">
+      <div className="flex flex-col gap-2">
+        <h1 className="font-serif text-4xl font-bold text-foreground tracking-tight">System Taxonomy</h1>
+        <p className="text-muted-foreground text-lg font-medium opacity-80">
+          Organize your resource library into structured spiritual domains.
         </p>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-2">
+      <div className="grid gap-10 lg:grid-cols-5">
         {/* Add Category Form */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="font-serif">Add Category</CardTitle>
-            <CardDescription>
-              Create a new category for your resources.
-            </CardDescription>
+        <Card className="lg:col-span-2 border-border/40 bg-white/40 backdrop-blur-xl dark:bg-black/40 overflow-hidden self-start">
+          <CardHeader className="border-b border-border/40 pb-6 bg-primary/5">
+             <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                   <Plus className="h-5 w-5" />
+                </div>
+                <div>
+                   <CardTitle className="font-serif text-xl tracking-tight">Manifest Category</CardTitle>
+                   <CardDescription>Define a new classification for your resources.</CardDescription>
+                </div>
+             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-8">
             <CategoryForm />
           </CardContent>
         </Card>
 
         {/* Existing Categories */}
-        <Card className="border-border/50">
-          <CardHeader>
-            <CardTitle className="font-serif">Existing Categories</CardTitle>
-            <CardDescription>
-              Manage your resource categories.
-            </CardDescription>
+        <Card className="lg:col-span-3 border-border/40 bg-white/40 backdrop-blur-xl dark:bg-black/40 overflow-hidden">
+          <CardHeader className="border-b border-border/40 pb-6 bg-secondary/10">
+             <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                   <FolderOpen className="h-5 w-5" />
+                </div>
+                <div>
+                   <CardTitle className="font-serif text-xl tracking-tight">Existing Classifications</CardTitle>
+                   <CardDescription>Audit and manage your current resource taxonomy.</CardDescription>
+                </div>
+             </div>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {categories && categories.length > 0 ? (
-              <div className="space-y-3">
+              <div className="divide-y divide-border/40">
                 {categories.map((category) => (
                   <div
                     key={category.id}
-                    className="flex items-center justify-between rounded-lg border border-border/50 p-3"
+                    className="flex items-center justify-between p-6 transition-colors hover:bg-primary/5"
                   >
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                        <FolderOpen className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-4">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-secondary/50 shadow-inner text-primary">
+                        <FolderOpen className="h-6 w-6 opacity-60" />
                       </div>
                       <div>
-                        <p className="font-medium text-foreground">{category.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {countByCategory[category.id] || 0} resources
+                        <p className="font-bold text-foreground text-lg tracking-tight">{category.name}</p>
+                        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest opacity-60">
+                          {countByCategory[category.id] || 0} RESOURCES MAPPED
                         </p>
                       </div>
                     </div>
@@ -84,10 +94,13 @@ export default async function AdminCategoriesPage() {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8">
-                <FolderOpen className="mx-auto h-12 w-12 text-muted-foreground" />
-                <p className="mt-4 text-sm text-muted-foreground">
-                  No categories yet. Create your first one!
+              <div className="flex flex-col items-center justify-center py-20 text-center">
+                <div className="h-20 w-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+                  <FolderOpen className="h-10 w-10 text-primary/40" />
+                </div>
+                <h3 className="text-2xl font-bold text-foreground tracking-tight">Taxonomy Empty</h3>
+                <p className="mt-2 text-muted-foreground font-medium max-w-xs mx-auto">
+                  No categories have been defined yet. Create your first classification on the left.
                 </p>
               </div>
             )}

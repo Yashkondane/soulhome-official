@@ -44,15 +44,15 @@ export default async function AdminResourcesPage() {
       </div>
 
       {resources && resources.length > 0 ? (
-        <div className="space-y-4">
+        <div className="grid gap-6">
           {resources.map((resource) => {
             const Icon = typeIcons[resource.type as keyof typeof typeIcons] || FileText
             const typeLabel = typeLabels[resource.type as keyof typeof typeLabels] || resource.type
 
             return (
-              <Card key={resource.id} className="border-border/50">
-                <CardContent className="flex items-center gap-4 p-4">
-                  <div className="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-primary/10 overflow-hidden">
+              <Card key={resource.id} className="group overflow-hidden border-border/40 bg-white/40 backdrop-blur-xl dark:bg-black/40 transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-0.5">
+                <CardContent className="flex items-center gap-6 p-5">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-primary/5 shadow-inner transition-transform duration-500 group-hover:scale-105">
                     {resource.thumbnail_url ? (
                       <img
                         src={resource.thumbnail_url}
@@ -60,36 +60,47 @@ export default async function AdminResourcesPage() {
                         className="h-full w-full object-cover"
                       />
                     ) : (
-                      <Icon className="h-6 w-6 text-primary" />
+                      <div className="flex h-full w-full items-center justify-center">
+                        <Icon className="h-8 w-8 text-primary/40" />
+                      </div>
                     )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                   </div>
+
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="truncate font-medium text-foreground">
-                        {resource.title}
-                      </h3>
-                      <Badge variant="outline">{typeLabel}</Badge>
-                      {resource.is_published ? (
-                        <Badge variant="secondary" className="bg-green-500/10 text-green-600">
-                          <Eye className="mr-1 h-3 w-3" />
+                    <div className="flex flex-wrap items-center gap-3 mb-2">
+                       <Badge variant="outline" className="rounded-full px-3 py-0.5 border-primary/20 bg-primary/5 text-primary text-[10px] uppercase font-bold tracking-widest leading-none">
+                         {typeLabel}
+                       </Badge>
+                       {resource.is_published ? (
+                        <Badge variant="secondary" className="rounded-full px-3 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] uppercase font-bold tracking-widest leading-none">
                           Published
                         </Badge>
-                      ) : (
-                        <Badge variant="secondary" className="bg-orange-500/10 text-orange-600">
-                          <EyeOff className="mr-1 h-3 w-3" />
-                          Draft
+                       ) : (
+                        <Badge variant="secondary" className="rounded-full px-3 py-0.5 bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 text-[10px] uppercase font-bold tracking-widest leading-none">
+                          Draft Mode
                         </Badge>
-                      )}
+                       )}
+                       {resource.category && (
+                         <Badge variant="ghost" className="rounded-full px-3 py-0.5 bg-secondary/50 text-muted-foreground text-[10px] uppercase font-bold tracking-widest leading-none">
+                           {resource.category.name}
+                         </Badge>
+                       )}
                     </div>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {resource.category?.name || 'Uncategorized'} • Created {new Date(resource.created_at).toLocaleDateString()}
+                    
+                    <h3 className="text-xl font-bold text-foreground tracking-tight truncate group-hover:text-primary transition-colors">
+                      {resource.title}
+                    </h3>
+                    
+                    <p className="mt-1 text-sm text-muted-foreground font-medium opacity-70">
+                      Created on {new Date(resource.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
+
                   <div className="flex items-center gap-2">
-                    <Button variant="ghost" size="sm" asChild>
+                    <Button variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary transition-all duration-300" asChild title="Edit Content">
                       <Link href={`/admin/resources/${resource.id}/edit`}>
-                        <Pencil className="h-4 w-4" />
-                        <span className="sr-only">Edit</span>
+                        <Pencil className="h-5 w-5" />
                       </Link>
                     </Button>
                     <DeleteResourceButton resourceId={resource.id} resourceTitle={resource.title} />
@@ -100,17 +111,19 @@ export default async function AdminResourcesPage() {
           })}
         </div>
       ) : (
-        <Card className="border-border/50">
-          <CardContent className="flex flex-col items-center justify-center py-12 text-center">
-            <FileText className="h-12 w-12 text-muted-foreground" />
-            <h3 className="mt-4 font-semibold text-foreground">No Resources Yet</h3>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Start building your resource library by adding your first resource.
+        <Card className="border-border/40 bg-white/40 backdrop-blur-xl dark:bg-black/40 border-dashed">
+          <CardContent className="flex flex-col items-center justify-center py-20 text-center">
+            <div className="h-20 w-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+              <Library className="h-10 w-10 text-primary/40" />
+            </div>
+            <h3 className="text-2xl font-bold text-foreground tracking-tight">The Library is Empty</h3>
+            <p className="mt-2 text-muted-foreground font-medium max-w-sm mx-auto">
+              You haven't added any resources yet. Start building your knowledge repository for members.
             </p>
-            <Button className="mt-4" asChild>
+            <Button className="mt-8 rounded-xl px-8 py-6 text-lg h-auto shadow-xl shadow-primary/20" asChild>
               <Link href="/admin/resources/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Add Your First Resource
+                <Plus className="mr-2 h-5 w-5" />
+                Manifest First Resource
               </Link>
             </Button>
           </CardContent>

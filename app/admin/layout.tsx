@@ -39,72 +39,88 @@ export default async function AdminLayout({
 
   const navLinks = [
     { href: "/admin", label: "Overview", icon: LayoutDashboard },
-    { href: "/admin/blogs", label: "Blogs", icon: FileText },
-    { href: "/admin/resources", label: "Resources", icon: Library },
-    { href: "/admin/categories", label: "Categories", icon: FolderOpen },
-    { href: "/admin/members", label: "Members", icon: Users },
+    { href: "/admin/blogs", label: "Blog Content", icon: FileText },
+    { href: "/admin/resources", label: "Resource Library", icon: Library },
+    { href: "/admin/categories", label: "System Categories", icon: FolderOpen },
+    { href: "/admin/members", label: "User Management", icon: Users },
   ]
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Top Navigation */}
-      <header className="sticky top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
-        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <Link href="/admin" className="flex items-center gap-3">
-            <Image
-              src="/logo.png"
-              alt="Soul Home"
-              width={40}
-              height={40}
-              className="object-contain"
-            />
-            <span className="font-serif text-xl font-semibold text-foreground tracking-wide">Admin Panel</span>
+    <div className="min-h-screen bg-[#fcfcfd] dark:bg-[#0a0a0b]">
+      {/* Sidebar - Desktop */}
+      <aside className="fixed left-0 top-0 hidden h-full w-72 border-r border-border/40 bg-white/50 backdrop-blur-xl dark:bg-black/50 md:block z-[60]">
+        <div className="flex h-full flex-col p-6">
+          <Link href="/admin" className="flex items-center gap-3 px-2 mb-10">
+            <div className="relative h-10 w-10 overflow-hidden rounded-xl bg-primary/10 p-2 shadow-inner">
+              <Image
+                src="/logo.png"
+                alt="Soul Home"
+                width={24}
+                height={24}
+                className="h-full w-full object-contain"
+              />
+            </div>
+            <div className="flex flex-col">
+              <span className="font-serif text-lg font-bold text-foreground leading-none tracking-tight">Admin Portal</span>
+              <span className="text-[10px] uppercase tracking-[0.2em] text-primary/60 font-semibold mt-1">Management Console</span>
+            </div>
           </Link>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
+
+          <nav className="flex-1 space-y-1.5">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="group flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition-all duration-300 hover:bg-primary/5 hover:text-primary relative overflow-hidden"
+              >
+                <link.icon className="h-5 w-5 transition-transform duration-300 group-hover:scale-110" />
+                {link.label}
+                <div className="absolute left-0 h-4 w-1 bg-primary rounded-r-full transform -translate-x-full transition-transform duration-300 group-hover:translate-x-0" />
+              </Link>
+            ))}
+          </nav>
+
+          <div className="mt-auto space-y-4 pt-6 border-t border-border/40">
+            <Button variant="outline" size="sm" className="w-full justify-start gap-3 rounded-xl border-border/40 bg-background/50 hover:bg-primary/5 hover:text-primary transition-all duration-300" asChild>
               <Link href="/">
-                <Home className="mr-2 h-4 w-4" />
-                Home
+                <Home className="h-4 w-4" />
+                Main Website
               </Link>
             </Button>
-            <Button variant="ghost" size="sm" asChild>
+            <Button variant="outline" size="sm" className="w-full justify-start gap-3 rounded-xl border-border/40 bg-background/50 hover:bg-primary/5 hover:text-primary transition-all duration-300" asChild>
               <Link href="/dashboard">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Member Dashboard
+                <ArrowLeft className="h-4 w-4" />
+                Member Area
               </Link>
             </Button>
-            <form action={signOut}>
-              <Button variant="ghost" size="sm">
-                <LogOut className="mr-2 h-4 w-4" />
+            <form action={signOut} className="w-full">
+              <Button variant="ghost" size="sm" className="w-full justify-start gap-3 rounded-xl text-red-500/80 hover:bg-red-500/5 hover:text-red-500 transition-all duration-300">
+                <LogOut className="h-4 w-4" />
                 Sign Out
               </Button>
             </form>
           </div>
         </div>
-      </header>
+      </aside>
 
-      <div className="flex">
-        {/* Sidebar */}
-        <aside className="hidden w-64 border-r border-border/50 bg-secondary/10 backdrop-blur-sm p-4 md:block">
-          <nav className="space-y-2">
-            {navLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-primary/5 hover:text-primary hover:shadow-sm"
-              >
-                <link.icon className="h-5 w-5" />
-                {link.label}
-              </Link>
-            ))}
-          </nav>
-        </aside>
+      {/* Main Content Area */}
+      <div className="md:pl-72 flex flex-col min-h-screen">
+        {/* Top bar for mobile or extra info */}
+        <header className="sticky top-0 z-50 md:hidden border-b border-border/40 bg-white/70 backdrop-blur-xl dark:bg-black/70 px-4 h-16 flex items-center justify-between">
+          <Link href="/admin" className="flex items-center gap-3">
+             <Image src="/logo.png" alt="Logo" width={32} height={32} className="object-contain" />
+             <span className="font-serif font-bold">Admin</span>
+          </Link>
+          <Button variant="ghost" size="icon" className="md:hidden">
+             <LayoutDashboard className="h-6 w-6" />
+          </Button>
+        </header>
 
-        {/* Main Content */}
-        <main className="flex-1 p-4 sm:p-6 lg:p-8">
-          {children}
+        <main className="flex-1 p-6 md:p-10 lg:p-12 max-w-[1600px] mx-auto w-full">
+           {children}
         </main>
       </div>
     </div>
+  )
   )
 }

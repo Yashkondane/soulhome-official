@@ -8,88 +8,104 @@ export default async function AdminBlogsPage() {
   const blogs = await adminGetBlogs()
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+    <div className="space-y-10">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
-          <h1 className="font-serif text-3xl font-bold text-foreground tracking-tight">Blog Management</h1>
-          <p className="mt-1 text-muted-foreground text-lg">
-            Create, edit, and manage your blog posts.
+          <h1 className="font-serif text-4xl font-bold text-foreground tracking-tight">Content Management</h1>
+          <p className="mt-2 text-muted-foreground text-lg font-medium opacity-80">
+            Publish and distribute spiritual wisdom through your blog.
           </p>
         </div>
-        <Button asChild className="gap-2">
+        <Button asChild className="rounded-xl px-6 py-6 h-auto shadow-xl shadow-primary/20 transition-transform active:scale-95 group">
           <Link href="/admin/blogs/new">
-            <PlusCircle className="h-4 w-4" />
-            New Post
+            <PlusCircle className="mr-2 h-5 w-5 transition-transform group-hover:rotate-90 duration-300" />
+            New Spiritual Guide
           </Link>
         </Button>
       </div>
 
-      <Card className="border-border/50 bg-card/50 backdrop-blur-sm">
-        <CardHeader>
-          <CardTitle className="font-serif">All Posts</CardTitle>
-          <CardDescription>Manage your published and draft articles.</CardDescription>
+      <Card className="border-border/40 bg-white/40 backdrop-blur-xl dark:bg-black/40 overflow-hidden">
+        <CardHeader className="border-b border-border/40 pb-6 bg-secondary/10">
+          <div className="flex items-center gap-4">
+             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <FileText className="h-5 w-5" />
+             </div>
+             <div>
+                <CardTitle className="font-serif text-2xl tracking-tight">Manuscript Library</CardTitle>
+                <CardDescription>Comprehensive list of all your published and drafted articles.</CardDescription>
+             </div>
+          </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0">
           {blogs && blogs.length > 0 ? (
-            <div className="rounded-md border border-border/50">
-              <div className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 p-4 font-medium text-muted-foreground border-b border-border/50 bg-secondary/20">
-                <div>Title</div>
-                <div className="w-24 text-center">Status</div>
-                <div className="w-32 hidden sm:block">Date</div>
-                <div className="w-24 text-right">Actions</div>
-              </div>
-              <div className="divide-y divide-border/50">
-                {blogs.map((blog) => (
-                  <div key={blog.id} className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 p-4 transition-colors hover:bg-secondary/10">
-                    <div className="font-medium text-foreground truncate max-w-[200px] sm:max-w-md">
-                      {blog.title}
-                    </div>
-                    <div className="w-24 text-center">
-                      {blog.is_published ? (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-green-500/10 px-2 py-1 text-xs font-medium text-green-600 dark:text-green-400">
-                          <Eye className="h-3 w-3" /> Published
-                        </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 rounded-full bg-yellow-500/10 px-2 py-1 text-xs font-medium text-yellow-600 dark:text-yellow-400">
-                          <EyeOff className="h-3 w-3" /> Draft
-                        </span>
-                      )}
-                    </div>
-                    <div className="w-32 text-sm text-muted-foreground hidden sm:block">
-                      {new Date(blog.created_at).toLocaleDateString()}
-                    </div>
-                    <div className="flex w-24 items-center justify-end gap-2">
-                      <Button variant="ghost" size="icon" asChild className="h-8 w-8 text-muted-foreground hover:text-primary">
-                        <Link href={`/admin/blogs/${blog.id}/edit`}>
-                          <Pencil className="h-4 w-4" />
-                          <span className="sr-only">Edit</span>
-                        </Link>
-                      </Button>
-                      <form action={async () => {
-                        "use server"
-                        await deleteBlog(blog.id)
-                      }}>
-                        <Button type="submit" variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground hover:text-destructive">
-                          <Trash2 className="h-4 w-4" />
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </form>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                 <thead>
+                    <tr className="border-b border-border/40 bg-secondary/5 text-[10px] uppercase font-bold tracking-[0.2em] text-muted-foreground/60">
+                       <th className="px-6 py-4">Status</th>
+                       <th className="px-6 py-4">Title</th>
+                       <th className="px-6 py-4">Creation Date</th>
+                       <th className="px-6 py-4 text-right">Actions</th>
+                    </tr>
+                 </thead>
+                 <tbody className="divide-y divide-border/40">
+                   {blogs.map((blog) => (
+                     <tr key={blog.id} className="group transition-colors hover:bg-primary/5">
+                        <td className="px-6 py-5 align-middle">
+                          {blog.is_published ? (
+                            <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20 text-[10px] font-bold uppercase tracking-wider rounded-full py-0.5 px-3">
+                               Live
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20 text-[10px] font-bold uppercase tracking-wider rounded-full py-0.5 px-3">
+                               Draft
+                            </Badge>
+                          )}
+                        </td>
+                        <td className="px-6 py-5 align-middle">
+                           <p className="font-bold text-foreground text-base tracking-tight group-hover:text-primary transition-colors">
+                             {blog.title}
+                           </p>
+                           <p className="text-xs text-muted-foreground italic max-w-sm truncate mt-0.5 opacity-60">
+                             Soulful transmission for your community
+                           </p>
+                        </td>
+                        <td className="px-6 py-5 align-middle text-sm text-muted-foreground font-medium opacity-80">
+                           {new Date(blog.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </td>
+                        <td className="px-6 py-5 align-middle text-right">
+                           <div className="flex items-center justify-end gap-2">
+                              <Button variant="ghost" size="icon" asChild className="h-10 w-10 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-all duration-300" title="Edit Post">
+                                <Link href={`/admin/blogs/${blog.id}/edit`}>
+                                  <Pencil className="h-5 w-5" />
+                                </Link>
+                              </Button>
+                              <form action={async () => {
+                                "use server"
+                                await deleteBlog(blog.id)
+                              }}>
+                                <Button type="submit" variant="ghost" size="icon" className="h-10 w-10 rounded-xl hover:bg-red-500/10 hover:text-red-500 text-muted-foreground transition-all duration-300" title="Delete Post">
+                                  <Trash2 className="h-5 w-5" />
+                                </Button>
+                              </form>
+                           </div>
+                        </td>
+                     </tr>
+                   ))}
+                 </tbody>
+              </table>
             </div>
           ) : (
-            <div className="flex min-h-[200px] flex-col items-center justify-center rounded-md border border-dashed border-border/50 bg-secondary/5 text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                <PlusCircle className="h-6 w-6 text-primary" />
+            <div className="flex flex-col items-center justify-center py-24 text-center">
+              <div className="h-20 w-20 rounded-full bg-primary/5 flex items-center justify-center mb-6">
+                <FileText className="h-10 w-10 text-primary/40" />
               </div>
-              <h3 className="mt-4 text-lg font-semibold text-foreground font-serif">No posts yet</h3>
-              <p className="mt-2 text-sm text-muted-foreground mb-4">
-                You haven&apos;t written any blog posts. Start creating your first one.
+              <h3 className="text-2xl font-bold text-foreground tracking-tight">The Library is Quiet</h3>
+              <p className="mt-2 text-muted-foreground font-medium max-w-sm mx-auto">
+                Your thoughts are yet to be recorded. Share your wisdom with the world through a new blog post.
               </p>
-              <Button asChild variant="outline">
-                <Link href="/admin/blogs/new">Write a Post</Link>
+              <Button asChild className="mt-10 rounded-xl px-8 py-6 text-lg h-auto shadow-xl shadow-primary/20">
+                <Link href="/admin/blogs/new">Transcribe First Post</Link>
               </Button>
             </div>
           )}
