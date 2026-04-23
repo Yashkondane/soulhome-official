@@ -1,8 +1,9 @@
 import { adminGetBlogs, deleteBlog } from "@/app/actions/blog"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { PlusCircle, Pencil, Trash2, Eye, EyeOff } from "lucide-react"
+import { PlusCircle, Pencil, Trash2, Eye, EyeOff, FileText } from "lucide-react"
 
 export default async function AdminBlogsPage() {
   const blogs = await adminGetBlogs()

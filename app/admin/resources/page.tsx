@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Plus, FileText, Headphones, Play, Eye, EyeOff, Pencil, Trash2, Download } from "lucide-react"
+import { Plus, FileText, Headphones, Play, Eye, EyeOff, Pencil, Trash2, Download, Library } from "lucide-react"
 import { DeleteResourceButton } from "./delete-resource-button"
 
 export default async function AdminResourcesPage() {
