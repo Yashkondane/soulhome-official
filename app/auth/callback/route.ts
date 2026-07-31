@@ -19,7 +19,7 @@ export async function GET(request: Request) {
         console.log(`[Auth Callback] New user detected: ${user.email}. Sending welcome email...`)
         
         // Use full_name from metadata or default to email prefix
-        const name = user.user_metadata?.full_name || user.email?.split('@')[0] || 'there'
+        const name = user.user_metadata?.full_name || (user.email ? user.email.split('@')[0] : 'there') || 'there'
         
         // Trigger Welcome Email (Async)
         sendWelcomeEmail(user.email!, name).catch(err => {

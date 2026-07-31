@@ -81,7 +81,7 @@ export default async function DownloadsPage() {
                       {resource.category && (
                         <span>{resource.category.name}</span>
                       )}
-                      <span className="flex items-center gap-1">
+                      <span className="flex items-center gap-1" suppressHydrationWarning>
                         <Clock className="h-3 w-3" />
                         {new Date(download.downloaded_at).toLocaleDateString()}
                       </span>

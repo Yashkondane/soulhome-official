@@ -27,7 +27,7 @@ export default async function SettingsPage() {
     .eq('id', user.id)
     .single()
 
-  const username = profile?.full_name || user.email?.split('@')[0] || 'your name'
+  const username = profile?.full_name || (user.email ? user.email.split('@')[0] : 'Member') || 'your name'
 
   return (
     <div className="space-y-8">

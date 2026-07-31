@@ -61,7 +61,7 @@ export default async function DashboardPage() {
     <div className="max-w-7xl mx-auto space-y-10 pb-12">
       <div className="flex flex-col gap-2">
         <h1 className="font-serif text-4xl font-bold text-foreground tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-          Welcome back, {user.email?.split('@')[0]}
+          Welcome back, {user.email ? user.email.split('@')[0] : 'Member'}
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl">
           Continue your spiritual journey with our latest resources and teachings.
@@ -163,7 +163,7 @@ export default async function DashboardPage() {
                           <p className="truncate text-sm font-semibold text-foreground leading-tight">
                             {download.resource?.title || 'Unknown Resource'}
                           </p>
-                          <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1">
+                          <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1" suppressHydrationWarning>
                             <Clock className="h-2.5 w-2.5" />
                             {new Date(download.downloaded_at).toLocaleDateString()}
                           </p>
