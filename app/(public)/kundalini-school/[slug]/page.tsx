@@ -9,6 +9,8 @@ import { ArrowLeft, BookOpen, Headphones, Play, FileText, Clock, Download, Calen
 import { getFileIdFromUrl } from "@/lib/google-drive"
 import { PdfViewerWrapper } from "./pdf-viewer-wrapper"
 import { PurchaseAction } from "@/components/purchase-action"
+import { safeDate } from "@/lib/utils"
+
 
 interface ResourcePageProps {
   params: Promise<{ slug: string }>
@@ -356,7 +358,7 @@ export default async function ResourcePage({ params }: ResourcePageProps) {
                 <div>
                   <p className="text-sm font-medium text-foreground">Added</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(resource.created_at).toLocaleDateString()}
+                    {safeDate(resource.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>

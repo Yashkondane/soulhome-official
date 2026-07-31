@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Download, FileText, Headphones, Play, Clock, ExternalLink } from "lucide-react"
+import { safeDate } from "@/lib/utils"
 
 export default async function DownloadsPage() {
   const supabase = await createClient()
@@ -83,7 +84,7 @@ export default async function DownloadsPage() {
                       )}
                       <span className="flex items-center gap-1" suppressHydrationWarning>
                         <Clock className="h-3 w-3" />
-                        {new Date(download.downloaded_at).toLocaleDateString()}
+                        {safeDate(download.downloaded_at).toLocaleDateString()}
                       </span>
                     </div>
                   </div>

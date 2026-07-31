@@ -10,6 +10,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Users, Search, Download, Calendar, Shield, CreditCard, ChevronRight, XCircle, AlertCircle, FileText, Music, Video, LineChart as LineChartIcon } from "lucide-react"
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Area, AreaChart, Legend } from 'recharts'
 import { format, subDays, startOfDay, isAfter, startOfMonth, subMonths } from "date-fns"
+import { safeDate } from "@/lib/utils"
+
 
 interface Profile {
   id: string
@@ -131,7 +133,7 @@ export function MembersClient({
 
     profiles.forEach(p => {
       if (!p.created_at) return
-      const pDate = new Date(p.created_at)
+      const pDate = safeDate(p.created_at)
       let index = -1
       if (timeRange === 'today' || timeRange === 'yesterday') {
         index = data.findIndex(d => isSameHour(d.dateObj, pDate))
@@ -145,7 +147,7 @@ export function MembersClient({
 
     purchases.forEach(p => {
       if (!p.created_at) return
-      const pDate = new Date(p.created_at)
+      const pDate = safeDate(p.created_at)
       let index = -1
       if (timeRange === 'today' || timeRange === 'yesterday') {
         index = data.findIndex(d => isSameHour(d.dateObj, pDate))
@@ -316,7 +318,7 @@ export function MembersClient({
                       
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-1 text-xs">
-                          <span className="text-muted-foreground">Joined: <span className="font-semibold text-foreground">{format(new Date(profile.created_at), 'MMM d, yyyy')}</span></span>
+                          <span className="text-muted-foreground">Joined: <span className="font-semibold text-foreground">{format(safeDate(profile.created_at), 'MMM d, yyyy')}</span></span>
                         </div>
                       </td>
 
@@ -357,7 +359,7 @@ export function MembersClient({
                                         <h4 className="text-sm font-bold text-foreground mb-1 leading-tight">{p.resource?.title || 'Unknown Resource'}</h4>
                                         <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
                                           <Calendar className="h-3 w-3" />
-                                          {format(new Date(p.created_at), 'MMM d, yyyy • h:mm a')}
+                                          {format(safeDate(p.created_at), 'MMM d, yyyy • h:mm a')}
                                         </div>
                                       </div>
                                     </div>
@@ -414,7 +416,7 @@ export function MembersClient({
                                         <h4 className="text-sm font-bold text-foreground mb-1 leading-tight">{dl.resource?.title || 'Unknown Resource'}</h4>
                                         <div className="flex items-center gap-2 text-[11px] text-muted-foreground font-medium uppercase tracking-wider">
                                           <Calendar className="h-3 w-3" />
-                                          {format(new Date(dl.downloaded_at), 'MMM d, yyyy • h:mm a')}
+                                          {format(safeDate(dl.downloaded_at), 'MMM d, yyyy • h:mm a')}
                                         </div>
                                       </div>
                                     </div>

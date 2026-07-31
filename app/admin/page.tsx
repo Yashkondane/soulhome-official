@@ -2,6 +2,7 @@ import { createClient as createServerClient } from "@/lib/server"
 import { createClient as createSupabaseClient } from "@supabase/supabase-js"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Users, Library, Download, CreditCard, TrendingUp, Clock, FileText } from "lucide-react"
+import { safeDate } from "@/lib/utils"
 
 export default async function AdminPage() {
   const supabase = await createServerClient()
@@ -188,7 +189,7 @@ export default async function AdminPage() {
                     <div className="text-right">
                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-1">Joined</p>
                        <p className="text-xs font-bold text-foreground/80">
-                         {new Date(member.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                         {safeDate(member.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                        </p>
                     </div>
                   </div>
@@ -235,7 +236,7 @@ export default async function AdminPage() {
                     <div className="text-right">
                        <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/50 mb-1">Received</p>
                        <p className="text-xs font-bold text-foreground/80">
-                         {new Date(download.downloaded_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                         {safeDate(download.downloaded_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
                        </p>
                     </div>
                   </div>

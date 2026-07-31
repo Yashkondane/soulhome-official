@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import Link from "next/link"
 import { BookOpen, Headphones, Play, Download, ArrowRight, Clock, FileText, AlertCircle } from "lucide-react"
 import { getResourceCounts, getRecentResources } from "@/lib/queries"
+import { safeDate } from "@/lib/utils"
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -165,7 +166,7 @@ export default async function DashboardPage() {
                           </p>
                           <p className="text-[10px] text-muted-foreground flex items-center gap-1 mt-1" suppressHydrationWarning>
                             <Clock className="h-2.5 w-2.5" />
-                            {new Date(download.downloaded_at).toLocaleDateString()}
+                            {safeDate(download.downloaded_at).toLocaleDateString()}
                           </p>
                         </div>
                       </div>

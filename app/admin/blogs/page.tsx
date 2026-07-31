@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { PlusCircle, Pencil, Trash2, Eye, EyeOff, FileText } from "lucide-react"
+import { safeDate } from "@/lib/utils"
+
 
 export default async function AdminBlogsPage() {
   const blogs = await adminGetBlogs()
@@ -72,7 +74,7 @@ export default async function AdminBlogsPage() {
                            </p>
                         </td>
                         <td className="px-6 py-5 align-middle text-sm text-muted-foreground font-medium opacity-80">
-                           {new Date(blog.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                           {safeDate(blog.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                         </td>
                         <td className="px-6 py-5 align-middle text-right">
                            <div className="flex items-center justify-end gap-2">

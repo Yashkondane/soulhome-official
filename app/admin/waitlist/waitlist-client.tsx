@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Badge } from "@/components/ui/badge"
 import { Users, Check, X } from "lucide-react"
+import { safeDate } from "@/lib/utils"
+
 
 interface WaitlistEntry {
   id: string
@@ -105,7 +107,7 @@ export function WaitlistClient({ waitlist }: WaitlistClientProps) {
                         )}
                       </TableCell>
                       <TableCell className="text-muted-foreground px-6 text-sm">
-                        {format(new Date(entry.created_at), "MMM d, yyyy")}
+                        {format(safeDate(entry.created_at), "MMM d, yyyy")}
                       </TableCell>
                     </TableRow>
                   ))

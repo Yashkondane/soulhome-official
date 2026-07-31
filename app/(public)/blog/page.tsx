@@ -3,6 +3,8 @@ import Link from "next/link"
 import { Card, CardContent } from "@/components/ui/card"
 import { ArrowRight, Calendar, User } from "lucide-react"
 import { getPublishedBlogs } from "@/app/actions/blog"
+import { safeDate } from "@/lib/utils"
+
 
 export const metadata = {
   title: "Blog | Soulhome",
@@ -44,7 +46,7 @@ export default async function BlogPage() {
                     <div className="flex items-center gap-4 text-xs text-muted-foreground mb-3">
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5" />
-                        {new Date(blog.published_at!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {safeDate(blog.published_at!).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </div>
                       <div className="flex items-center gap-1.5 capitalize">
                         <User className="w-3.5 h-3.5" />

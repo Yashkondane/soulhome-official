@@ -4,7 +4,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { User, CreditCard, Mail } from "lucide-react"
+import { LogOut, User, Mail, Calendar, Key, AlertCircle } from "lucide-react"
+import { safeDate } from "@/lib/utils"
 import { ProfileForm } from "./profile-form"
 
 export default async function SettingsPage() {
@@ -79,7 +80,7 @@ export default async function SettingsPage() {
               <div>
                 <p className="text-sm text-muted-foreground">Member Since</p>
                 <p className="font-medium text-foreground">
-                  {new Date(user.created_at).toLocaleDateString()}
+                  {safeDate(user.created_at).toLocaleDateString()}
                 </p>
               </div>
             </div>

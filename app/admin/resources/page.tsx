@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Plus, FileText, Headphones, Play, Eye, EyeOff, Pencil, Trash2, Download, Library, ExternalLink } from "lucide-react"
 import { DeleteResourceButton } from "./delete-resource-button"
+import { safeDate } from "@/lib/utils"
+
 
 export default async function AdminResourcesPage() {
   const supabase = await createClient()
@@ -93,7 +95,7 @@ export default async function AdminResourcesPage() {
                     </h3>
                     
                     <p className="mt-1 text-sm text-muted-foreground font-medium opacity-70">
-                      Created on {new Date(resource.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
+                      Created on {safeDate(resource.created_at).toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' })}
                     </p>
                   </div>
 
